@@ -1,7 +1,7 @@
 # note-sharing-app
-A Java Spring Boot app for creating, editing, and sharing notes via RESTful APIs (in progress)
+A Java Spring Boot app for creating, editing, and sharing notes via RESTful APIs (*in progress*)
 
-## Planned Tech Stack
+### Planned Tech Stack
 
 Java (backend) — considering Spring Boot
 
@@ -12,7 +12,7 @@ H2 or SQLite database for data storage
 Optional frontend frameworks (TBD)
 
 
-##Planned Features
+### Planned Features
 
 Create, read, update, and delete notes (CRUD endpoints)
 
@@ -21,7 +21,7 @@ Scalable backend using object-oriented principles
 RESTful API design for integration with frontend
 
 
-##Status
+### Status
 
 Project is in early development
 
