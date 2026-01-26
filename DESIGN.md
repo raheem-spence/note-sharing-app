@@ -19,4 +19,4 @@
   - permission_level (view, edit, etc.)
   - UNIQUE(user_id, note_id) -- make sure each user can have one permission entry per note
 
-![Database Schema](note_sharing_project_schema(1).png)
+![Database Schema](note_sharing_project_schema.png)
