@@ -1,4 +1,5 @@
 # Database Schema: 3 tables
+## Database Name: notehub
 1. Users
   - id (primary key)
   - email
