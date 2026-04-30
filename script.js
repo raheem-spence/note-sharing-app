@@ -17,6 +17,13 @@ myTextBox.addEventListener("keydown", event => {
         const newContainer = document.createElement('div');
         const newContent = document.createElement('p');
 
+
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.textContent = "Edit"
+        editBtn.classList.add("editBtn");
+        
+        
         // Delete button
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = "Delete"
@@ -29,13 +36,14 @@ myTextBox.addEventListener("keydown", event => {
         // Nest elements
         newContainer.appendChild(newContent);
         newNote.appendChild(newContainer);
+        newNote.appendChild(editBtn);
         newNote.appendChild(deleteBtn);
 
         // Add new note to the array of notes
         let noteId = Date.now()
         allNotes.push({id: noteId, text: note});
 
-        // Id to attach to button for deleting notes by id
+        // ID to attach to button for deleting notes by id
         deleteBtn.dataset.id = noteId;
 
         
@@ -85,17 +93,24 @@ for (let loadedNote of allNotes) {
 
     oldContent.textContent = loadedNote.text;
 
-    // Delete btn
-    let deleteBtn = document.createElement('button');
+    // Delete button
+    const deleteBtn = document.createElement('button');
     deleteBtn.textContent = "Delete"
     deleteBtn.classList.add("deleteBtn");
     deleteBtn.dataset.id = loadedNote.id;
+
+
+    // Edit button
+    const editBtn = document.createElement('button');
+    editBtn.textContent = "Edit";
+    editBtn.classList.add("editBtn");
 
 
 
     // Nest elements
     oldContainer.appendChild(oldContent);
     oldNote.appendChild(oldContainer);
+    oldNote.appendChild(editBtn);
     oldNote.appendChild(deleteBtn);
 
     // Add a CSS class
