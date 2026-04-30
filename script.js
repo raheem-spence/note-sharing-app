@@ -128,8 +128,12 @@ for (let loadedNote of allNotes) {
 }
 
 
-// DELETE NOTES
+
+
+// UPDATE / DELETE NOTES
 notes.addEventListener("click", event => {
+
+    // Delete note
     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('deleteBtn')) {
         let noteId = event.target.dataset.id;
 
@@ -142,6 +146,29 @@ notes.addEventListener("click", event => {
          // Save notes in local storage
          localStorage.setItem('notesArray', jsonNotes);
          event.target.parentElement.parentElement.remove();
+
+    // Update note
+    } else if (event.target.tagName === 'BUTTON' && event.target.classList.contains('editBtn')) {
+        // Get article element (parent of the buttons parent)
+        const noteContainer = event.target.parentElement.parentElement;
+
+        // Get paragraph element
+        const paraElement = noteContainer.querySelector('p');
+
+        // Capture original text to prefill input box
+        const paraOriginal = paraElement.textContent;
+
+        // Remove paragraph element
+        paraElement.remove();
+
+        // Create input element
+        const editBox = document.createElement('input');
+
+        // Prefill input box with original paragraph text
+        editBox.value = paraOriginal;
+
+        // Prepend input element, place it at he very start of the parent (article) container
+        noteContainer.prepend(editBox);
 
     }
 });
