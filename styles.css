@@ -26,7 +26,10 @@
     overflow: auto;
 }
 
-
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+}
 
 .deleteBtn, .editBtn {
     width: 75px;

@@ -15,6 +15,7 @@ myTextBox.addEventListener("keydown", event => {
         // Create a new article element
         const newNote = document.createElement('article');
         const newContainer = document.createElement('div');
+        const btnContainer = document.createElement('div');
         const newContent = document.createElement('p');
 
 
@@ -35,9 +36,10 @@ myTextBox.addEventListener("keydown", event => {
 
         // Nest elements
         newContainer.appendChild(newContent);
+        btnContainer.appendChild(editBtn);
+        btnContainer.appendChild(deleteBtn);
         newNote.appendChild(newContainer);
-        newNote.appendChild(editBtn);
-        newNote.appendChild(deleteBtn);
+        newNote.appendChild(btnContainer);
 
         // Add new note to the array of notes
         let noteId = Date.now()
@@ -56,6 +58,7 @@ myTextBox.addEventListener("keydown", event => {
 
         // Add a CSS class
         newNote.classList.add("note");
+        btnContainer.classList.add("btn-container");
 
         // Returns an HTMLCollection of all <article> elements
         const articleElements = notes.getElementsByTagName("article");
@@ -89,6 +92,7 @@ let jsonNotes;
 for (let loadedNote of allNotes) {
     let oldNote = document.createElement('article');
     let oldContainer = document.createElement('div');
+    let btnContainer = document.createElement('div');
     let oldContent = document.createElement('p');
 
     oldContent.textContent = loadedNote.text;
@@ -109,12 +113,14 @@ for (let loadedNote of allNotes) {
 
     // Nest elements
     oldContainer.appendChild(oldContent);
+    btnContainer.appendChild(editBtn);
+    btnContainer.appendChild(deleteBtn);
     oldNote.appendChild(oldContainer);
-    oldNote.appendChild(editBtn);
-    oldNote.appendChild(deleteBtn);
+    oldNote.appendChild(btnContainer);
 
     // Add a CSS class
     oldNote.classList.add("note");
+    btnContainer.classList.add("btn-container");
 
     // Add each old note to the notes container
     notes.appendChild(oldNote);
@@ -135,7 +141,7 @@ notes.addEventListener("click", event => {
     
          // Save notes in local storage
          localStorage.setItem('notesArray', jsonNotes);
-         event.target.parentElement.remove();
+         event.target.parentElement.parentElement.remove();
 
     }
 });
