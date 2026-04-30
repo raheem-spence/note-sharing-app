@@ -1,0 +1,60 @@
+#notes-container {
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 225px));
+    grid-template-rows: minmax(100px, 400px);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px auto;
+    max-width: 1125px;
+}
+
+.note {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid blue;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    height: fit-content;
+    min-height: 75px;
+    max-height: 375px;
+    max-width: 225px;
+    min-width: 200px;
+    justify-content: space-between;
+    align-items: center;
+    overflow: auto;
+}
+
+.deleteBtn {
+    width: 75px;
+    height: 10%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#new-note {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+div {
+    width: 85%;
+}
+
+p {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: left;
+    overflow: auto;
+}
+
+#myTextBox {
+    width: 35%;
+    min-height: 20px;
+    max-height: 100px;
+    margin: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding-left: 10px;
+    padding-top: 15px;
+    overflow: auto;
+}
