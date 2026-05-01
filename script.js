@@ -45,8 +45,9 @@ myTextBox.addEventListener("keydown", event => {
         let noteId = Date.now()
         allNotes.push({id: noteId, text: note});
 
-        // ID to attach to button for deleting notes by id
+        // ID to attach to button for deleting/editing notes by id
         deleteBtn.dataset.id = noteId;
+        editBtn.dataset.id = noteId;
 
         
 
@@ -58,6 +59,7 @@ myTextBox.addEventListener("keydown", event => {
 
         // Add a CSS class
         newNote.classList.add("note");
+        newContainer.classList.add("divPara");
         btnContainer.classList.add("btn-container");
 
         // Returns an HTMLCollection of all <article> elements
@@ -108,6 +110,7 @@ for (let loadedNote of allNotes) {
     const editBtn = document.createElement('button');
     editBtn.textContent = "Edit";
     editBtn.classList.add("editBtn");
+    editBtn.dataset.id = loadedNote.id;
 
 
 
@@ -120,6 +123,7 @@ for (let loadedNote of allNotes) {
 
     // Add a CSS class
     oldNote.classList.add("note");
+    oldContainer.classList.add("divPara");
     btnContainer.classList.add("btn-container");
 
     // Add each old note to the notes container
@@ -149,6 +153,8 @@ notes.addEventListener("click", event => {
 
     // Update note
     } else if (event.target.tagName === 'BUTTON' && event.target.classList.contains('editBtn')) {
+        let noteId = event.target.dataset.id;
+
         // Get article element (parent of the buttons parent)
         const noteContainer = event.target.parentElement.parentElement;
 
@@ -169,6 +175,45 @@ notes.addEventListener("click", event => {
 
         // Prepend input element, place it at he very start of the parent (article) container
         noteContainer.prepend(editBox);
+
+        // Save the edit
+        editBox.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                // Get value from input box
+                const editValue = editBox.value;
+                
+                // Remove input box
+                editBox.remove();
+                
+                // Create paragraph element 
+                const editContent = document.createElement('p');
+
+                // Add value from input to paragraph element
+                editContent.textContent = editValue;
+
+                // Get div from note container (parent)
+                const divPara = noteContainer.querySelector('.divPara');
+
+                // Add edited paragraph to the beginning of the div container
+                divPara.prepend(editContent);
+
+
+                // SAVE EDIT
+                // Get the note via id from edit button
+                const editedNote = allNotes.find(note => note.id === Number(noteId));
+
+                // Set edited value in note
+                editedNote.text = editValue;
+
+                // Save to all notes
+                // Convert array into a string
+                jsonNotes = JSON.stringify(allNotes);
+           
+                // Save notes in local storage
+                localStorage.setItem('notesArray', jsonNotes);
+
+            }
+        })
 
     }
 });
