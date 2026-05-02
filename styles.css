@@ -1,65 +1,55 @@
-#notes-container {
-    display: grid;
-    place-items: center;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 225px));
-    grid-template-rows: minmax(100px, 400px);
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px auto;
-    max-width: 1125px;
-}
-
-.note {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid blue;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px;
-    height: fit-content;
-    min-height: 75px;
-    max-height: 375px;
-    max-width: 225px;
-    min-width: 200px;
-    justify-content: space-between;
-    align-items: center;
-    overflow: auto;
-}
-
-.btn-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.deleteBtn, .editBtn {
-    width: 75px;
-    height: 10%;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-#new-note {
+body {
+    font-family: Arial, Helvetica, sans-serif;
     display: flex;
     justify-content: center;
-    margin: 0 auto;
+    align-items: center;
 }
 
-div {
-    width: 85%;
+
+#login {
+    background-color: white;
+    border-radius: 7px;
+    width: 300px;
+    margin: 225px auto;
+    padding: 10px;
+    text-align: center;
 }
 
-p {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    text-align: left;
-    overflow: auto;
+
+input {
+    display: block;
+    background-color: lightgray;
+    border: lightgray;
+    border-radius: 2px;
+    width: 260px;
+    height: 50px;
+    margin: 5px 5px 5px 18px;
+    padding-left: 10x;
+    text-indent: 15px;
 }
 
-#myTextBox {
-    width: 35%;
-    min-height: 20px;
-    max-height: 100px;
-    margin: 20px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    padding-left: 10px;
-    padding-top: 15px;
-    overflow: auto;
+input::placeholder {
+    padding-left: 2px;
+    font-weight: 800;
+}
+
+input:focus {
+    border-color: #7876F6;
+    outline: none;
+    box-shadow: 0 0 5px rgba(120, 118, 246, 0.5);
+}
+
+button {
+    width: 265px;
+    height: 50px;
+    border: none;
+    border-radius: 2px;
+    background-color: #7876F6;
+    color: white;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+button:hover {
+    background-color: #6A68D9;
 }
