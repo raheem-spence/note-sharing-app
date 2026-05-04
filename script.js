@@ -6,6 +6,12 @@ const classes = [
     {id: "spanish", name: "SPANISH 101", description: "class about Spanish"}
 ]
 
+const notes = [
+    {id: 1, classId: "chem", text: "Today we learned about organic compounds and how they interact with one another"},
+    {id: 2, classId: "bio", text: "For this lecture, we discussed anatomy."},
+    {id: 3, classId: "chem", text: "We learned about chelation today"}
+
+]
 
 // Redirect to classes page
 // Select button
@@ -39,12 +45,47 @@ if (classesContainer) {
     })
 } 
 
+
+
 // CLASS PAGE 
 // Get specific class by hash (e.g. #chem)
 // Remove '#' using substring()
 const cleanedHash = window.location.hash.substring(1);
+const propVal = String(cleanedHash);
+
+// Get class object
+const clsObj = classes.find(cls => cls.id === propVal);
+
+// Get all note objects for specific class
+const noteObjs = notes.filter(note => note.classId === propVal);
 
 // Create H1 element
 const heading = document.createElement('h1');
-heading.textContent = cleanedHash;
+
+// Create paragraphe element
+const para = document.createElement('p');
+
+// Create notes cotainaer
+const notesContainer = document.createElement('div');
+
+
+// Create paragraph for each note
+for (const note of noteObjs) {
+    const noteContent = document.createElement('p');
+    noteContent.classList.add('note');
+    noteContent.textContent = note.text;
+    notesContainer.appendChild(noteContent);
+}
+
+
+// Fill elements with class info
+heading.textContent = clsObj.name;
+para.textContent = clsObj.description;
+
+heading.classList.add('class-heading');
+para.classList.add('class-para');
+notesContainer.classList.add('notesContainer');
+
 document.body.appendChild(heading);
+document.body.appendChild(para);
+document.body.appendChild(notesContainer);

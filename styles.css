@@ -73,3 +73,24 @@ button:hover {
     transform: scale(1.01);
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
 }
+
+.class-heading {
+    text-align: center;
+}
+
+.class-para {
+    text-align: center;
+}
+
+.notesContainer {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.note {
+    margin: 10px;
+    background-color: #7876F6;
+    border-radius: 3px;
+    padding: 3px;
+}
