@@ -6,7 +6,6 @@ header h1 {
     text-align: center;
 }
 
-
 #login {
     background-color: white;
     border-radius: 7px;
@@ -15,7 +14,6 @@ header h1 {
     padding: 10px;
     text-align: center;
 }
-
 
 input {
     display: block;
@@ -55,7 +53,7 @@ button:hover {
     background-color: #6A68D9;
 }
 
-.classes-container {
+#classes-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
