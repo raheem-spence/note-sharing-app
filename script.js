@@ -9,8 +9,11 @@ const classes = [
 const notes = [
     {id: 1, classId: "chem", text: "Today we learned about organic compounds and how they interact with one another"},
     {id: 2, classId: "bio", text: "For this lecture, we discussed anatomy."},
-    {id: 3, classId: "chem", text: "We learned about chelation today"}
-
+    {id: 3, classId: "chem", text: "We learned about chelation today"},
+    {id: 4, classId: "bio", text: "We learned about cell structure of prokaryote/eukaryote, membrane transport, photosynthesism, cellular respiration."},
+    {id: 5, classId: "bio", text: "Today's topic was Genetics and Heredity: DNA structure, replication, protein synthesis (transcription/translation), Mendelian genetics, molecular genetics, and gene regulation. "},
+    {id: 6, classId: "spanish", text: "Learned about the subjunctive and phrases that trigger the subjunctive. For example, 'para que', 'sin que'."},
+    {id: 7, classId: "physics", text: "This class we learned about torque and angular momentum."}
 ]
 
 // Redirect to classes page
