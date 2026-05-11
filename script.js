@@ -77,7 +77,7 @@ const para = document.createElement('p');
 // Create notes cotainaer
 const notesContainer = document.createElement('div');
 
-
+loadNotes();
 renderNotes(propVal);
 
 // Add elements to their css classes
@@ -120,11 +120,11 @@ createBtn.addEventListener('click', event => {
     // Push new note object to notes array
     notes.push(newNoteObj);
 
+
     // Clear input
     noteTextarea.value = "";
 
-    // Render notes
-    renderNotes(propVal);
+    updateNotes(propVal);
 })
 
 
@@ -144,19 +144,28 @@ function renderNotes(classId) {
     for (const note of noteObjs) {
         const noteDiv = document.createElement('div');
         const noteContent = document.createElement('p');
+        const btnContainer = document.createElement('div');
+        const editBtn = document.createElement('button');
         const deleteBtn = document.createElement('button');
+        editBtn.textContent = "Edit";
         deleteBtn.textContent = "Delete";
 
-        // Attach note id to delete button
+
+        // Attach note id to delete/edit button
         deleteBtn.dataset.id = note.id;
+        editBtn.dataset.id = note.id;
   
         noteContent.textContent = note.text;
+        btnContainer.appendChild(editBtn);
+        btnContainer.appendChild(deleteBtn);
         noteDiv.appendChild(noteContent);
-        noteDiv.appendChild(deleteBtn);
+        noteDiv.appendChild(btnContainer);
+       
 
 
         // Add to appropriate css class
         deleteBtn.classList.add('delete-btn');
+        editBtn.classList.add('edit-btn');
         noteDiv.classList.add('note-div');
         noteContent.classList.add('note');
         notesContainer.appendChild(noteDiv);
@@ -168,6 +177,74 @@ function renderNotes(classId) {
 }
 
 
+// Event delegation of Notes Container
+notesContainer.addEventListener('click', event => {
+
+    // Delete note
+    if (event.target.classList.contains('delete-btn')) {
+        // Get note id via delete button id
+        const noteId = event.target.dataset.id;
+
+        // Remove the note object with specific note id
+        notes = notes.filter(note => note.id !== Number(noteId));
+
+        updateNotes(propVal);
+    }
+
+    // Update note
+    else if (event.target.classList.contains('edit-btn')) {
+        //Get note id via edit button id
+        const noteId = event.target.dataset.id;
+
+        // Get note to edit
+        const note = notes.find(note => note.id === Number(noteId));
+
+        // Find the note container
+        const noteContainer = event.target.parentElement.parentElement;
+
+        // Get the paragraph element needed to switch
+        const para = noteContainer.querySelector('p');
+
+        // Get the text area to swtich
+        const editTextArea = noteContainer.querySelector('textarea');
+
+        // Chekc if it contains a textarea
+        if (editTextArea) {
+
+            const newPara = document.createElement('p');
+            newPara.classList.add('note');
+
+            note.text = editTextArea.value;
+
+            newPara.textContent = editTextArea.value;
+            editTextArea.replaceWith(newPara);
+
+            updateNotes(propVal);
+
+
+        } else {
+            // Textarea to edit
+            const editArea = document.createElement('textarea');
+            editArea.classList.add('edit-area')
+
+            // Add current value to text area
+            editArea.value = note.text;
+
+            // Change edit button text to 'save'
+            event.target.textContent = "Save";
+            
+            // Replace paragraph with edit area
+            para.replaceWith(editArea);
+
+            // Autofocus
+            editArea.focus();
+        }
+    }
+})
+
+
+// HELPER FUNCTIONS
+
 // Function to validate input when creating notes
 function validateInput(text) {
     if (text.trim() === "") {
@@ -178,19 +255,31 @@ function validateInput(text) {
     }
 }
 
-// Event delegation of Notes Container
-notesContainer.addEventListener('click', event => {
+// SAVE NOTES
+function saveNotes() {
+    // Convert notes array into a JSON string
+    const jsonNotes = JSON.stringify(notes);
 
-    // Delete note
-    if (event.target.classList.contains('delete-btn')) {
-        // Get note id via delete button id
-        const noteId = event.target.dataset.id;
+    // Save in localStorage
+    localStorage.setItem('notes', jsonNotes);
+}
 
-        console.log(noteId);
+// LOAD NOTES
+function loadNotes() {
+    // Get notes from local storage
+    const jsonNotes = localStorage.getItem('notes');
 
-        // Remove the note object with specific note id
-        notes = notes.filter(note => note.id !== Number(noteId));
-
-        renderNotes(propVal);
+    if (jsonNotes === null) {
+        notes = [];
+    } else {
+        // Convert JSON string of notes into an object
+        notes = JSON.parse(jsonNotes);
     }
-})
+}
+
+
+// Update notes function responsible for the update cycle
+function updateNotes(propVal) {
+    saveNotes();
+    renderNotes(propVal);
+}

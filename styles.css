@@ -65,6 +65,26 @@ button:hover {
     background-color: #F5F5F5 ;
 }
 
+.edit-btn {
+    width: 100px;
+    height: 50px;
+    background-color: white;
+    color: #6A68D9;
+    margin: 5px;
+}
+
+.edit-btn:hover {
+    background-color: #F5F5F5 ;
+}
+
+.edit-area {
+    margin: 2px;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+}
+
 
 #classes-container {
     display: grid;
