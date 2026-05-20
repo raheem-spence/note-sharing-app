@@ -1,0 +1,11 @@
+### GET request to example server
+GET http://localhost:8080/api/v2/notes
+
+###
+POST http://localhost:8080/api/v2/notes
+Content-Type: application/json
+
+{
+  "classId": "bio",
+  "text": "We have a test on friday about frogs..."
+}
