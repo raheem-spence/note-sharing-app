@@ -1,3 +1,13 @@
+// Connect to api
+fetch('http://localhost:8080/api/v2/notes')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error(error));
+
+
+
+
+
 // Class objects
 const classes = [
     {id: "chem", name: "CHEM 101", description: "class about Chemistry"},
@@ -6,15 +16,7 @@ const classes = [
     {id: "spanish", name: "SPANISH 101", description: "class about Spanish"}
 ]
 
-let notes = [
-    {id: 1, classId: "chem", text: "Today we learned about organic compounds and how they interact with one another"},
-    {id: 2, classId: "bio", text: "For this lecture, we discussed anatomy."},
-    {id: 3, classId: "chem", text: "We learned about chelation today"},
-    {id: 4, classId: "bio", text: "We learned about cell structure of prokaryote/eukaryote, membrane transport, photosynthesism, cellular respiration."},
-    {id: 5, classId: "bio", text: "Today's topic was Genetics and Heredity: DNA structure, replication, protein synthesis (transcription/translation), Mendelian genetics, molecular genetics, and gene regulation. "},
-    {id: 6, classId: "spanish", text: "Learned about the subjunctive and phrases that trigger the subjunctive. For example, 'para que', 'sin que'."},
-    {id: 7, classId: "physics", text: "This class we learned about torque and angular momentum."}
-]
+let notes = [];
 
 // Redirect to classes page
 // Select button
@@ -78,7 +80,7 @@ const para = document.createElement('p');
 const notesContainer = document.createElement('div');
 
 loadNotes();
-renderNotes(propVal);
+renderNotes(notes, propVal);
 
 // Add elements to their css classes
 heading.classList.add('class-heading');
@@ -129,7 +131,7 @@ createBtn.addEventListener('click', event => {
 
 
 // Render function to remove duplicate logic for rendeing notes
-function renderNotes(classId) {
+function renderNotes(notes, classId) {
 
     // Clear all notes
     notesContainer.replaceChildren();
@@ -266,15 +268,13 @@ function saveNotes() {
 
 // LOAD NOTES
 function loadNotes() {
-    // Get notes from local storage
-    const jsonNotes = localStorage.getItem('notes');
-
-    if (jsonNotes === null) {
-        notes = [];
-    } else {
-        // Convert JSON string of notes into an object
-        notes = JSON.parse(jsonNotes);
-    }
+    // Get notes from backend
+    fetch('http://localhost:8080/api/v2/notes')
+    .then(response => response.json())
+    .then(data => {
+        notes = data;
+        renderNotes(notes, propVal);
+    })
 }
 
 
