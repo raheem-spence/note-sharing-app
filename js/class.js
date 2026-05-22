@@ -1,13 +1,3 @@
-// Connect to api
-fetch('http://localhost:8080/api/v2/notes')
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
-
-
-
-
-
 // Class objects
 const classes = [
     {id: "chem", name: "CHEM 101", description: "class about Chemistry"},
@@ -15,41 +5,6 @@ const classes = [
     {id: "physics", name: "PHYSICS 101", description: "class about Physics"},
     {id: "spanish", name: "SPANISH 101", description: "class about Spanish"}
 ]
-
-let notes = [];
-
-// Redirect to classes page
-// Select button
-const loginBtn = document.getElementById('login-btn');
-
-// Check if element exists, meaning we are on that page
-if (loginBtn) {
-    // Add listener
-    loginBtn.addEventListener('click', event => {
-        window.location.href = "classes.html";
-    })
-}
-
-// CLASSES PAGE
-// Select classes container
-const classesContainer = document.getElementById('classes-container');
-
-// Check if element exist, meaning we are on that page
-if (classesContainer) {
-    // Add listener to classes container
-    classesContainer.addEventListener('click', event => {
-       
-        // Get parent card
-        const parentCard = event.target.closest('.class-card');
-
-        // Class card id
-        const classId = parentCard.id;
-
-        // Navigate to page
-        window.location.href = `class.html#${classId}`;
-    })
-} 
-
 
 
 // CLASS PAGE 
@@ -80,7 +35,6 @@ const para = document.createElement('p');
 const notesContainer = document.createElement('div');
 
 loadNotes();
-renderNotes(notes, propVal);
 
 // Add elements to their css classes
 heading.classList.add('class-heading');
@@ -100,7 +54,8 @@ document.body.appendChild(notesContainer);
 
 // Create note
 // Event listener for click of create btn
-createBtn.addEventListener('click', event => {
+createBtn.addEventListener('click', function () {
+
     const newNoteContent = noteTextarea.value;
 
     // Validate input
@@ -110,24 +65,24 @@ createBtn.addEventListener('click', event => {
         return;
     }
 
-    // Create new note object
-    // Object ID
-    const objId = Date.now();
-
     // Class ID
     const clsId = propVal;
 
-    const newNoteObj = {id: objId, classId: clsId, text: newNoteContent};
+    const noteData = {classId: clsId, text: newNoteContent};
 
-    // Push new note object to notes array
-    notes.push(newNoteObj);
+    fetch('http://localhost:8080/api/v2/notes/create-note', {
+        method: 'POST', // Specify the request method
+        headers: {
+            'Content-Type': 'application/json' // Inform the server im sending JSON
+        },
+        body: JSON.stringify(noteData) // Convert object into JSON string
+    }).then(response => response.json()) // Parse JSON response
+    .then(result => {
+        console.log('note created:', result);
+        loadNotes();
+    }).catch(error => console.error('Error:', error));
+    });
 
-
-    // Clear input
-    noteTextarea.value = "";
-
-    updateNotes(propVal);
-})
 
 
 // Render function to remove duplicate logic for rendeing notes
@@ -142,35 +97,45 @@ function renderNotes(notes, classId) {
     // Get all note objects for specific class
     const noteObjs = notes.filter(note => note.classId === classId);
 
-    // Create paragraph for each note
-    for (const note of noteObjs) {
-        const noteDiv = document.createElement('div');
-        const noteContent = document.createElement('p');
-        const btnContainer = document.createElement('div');
-        const editBtn = document.createElement('button');
-        const deleteBtn = document.createElement('button');
-        editBtn.textContent = "Edit";
-        deleteBtn.textContent = "Delete";
+    if (noteObjs.length === 0) {
+        const noNotePara = document.createElement('p');
+        noNotePara.textContent = "New notes appear here";
+        noNotePara.classList.add('class-para');
+        notesContainer.appendChild(noNotePara);    
+    } else {
+
+        // Create paragraph for each note
+        for (const note of noteObjs) {
+            const noteDiv = document.createElement('div');
+            const noteContent = document.createElement('p');
+            const btnContainer = document.createElement('div');
+            const editBtn = document.createElement('button');
+            const deleteBtn = document.createElement('button');
+            editBtn.textContent = "Edit";
+            deleteBtn.textContent = "Delete";
 
 
-        // Attach note id to delete/edit button
-        deleteBtn.dataset.id = note.id;
-        editBtn.dataset.id = note.id;
-  
-        noteContent.textContent = note.text;
-        btnContainer.appendChild(editBtn);
-        btnContainer.appendChild(deleteBtn);
-        noteDiv.appendChild(noteContent);
-        noteDiv.appendChild(btnContainer);
-       
+            // Attach note id to delete/edit button
+            deleteBtn.dataset.id = note.id;
+            editBtn.dataset.id = note.id;
+    
+            noteContent.textContent = note.text;
+            btnContainer.appendChild(editBtn);
+            btnContainer.appendChild(deleteBtn);
+            noteDiv.appendChild(noteContent);
+            noteDiv.appendChild(btnContainer);
+        
 
 
-        // Add to appropriate css class
-        deleteBtn.classList.add('delete-btn');
-        editBtn.classList.add('edit-btn');
-        noteDiv.classList.add('note-div');
-        noteContent.classList.add('note');
-        notesContainer.appendChild(noteDiv);
+            // Add to appropriate css class
+            deleteBtn.classList.add('delete-btn');
+            editBtn.classList.add('edit-btn');
+            noteDiv.classList.add('note-div');
+            noteContent.classList.add('note');
+
+            notesContainer.appendChild(noteDiv);
+
+        }
     }
 
     // Fill elements with class info
@@ -268,6 +233,7 @@ function saveNotes() {
 
 // LOAD NOTES
 function loadNotes() {
+
     // Get notes from backend
     fetch('http://localhost:8080/api/v2/notes')
     .then(response => response.json())
@@ -281,5 +247,5 @@ function loadNotes() {
 // Update notes function responsible for the update cycle
 function updateNotes(propVal) {
     saveNotes();
-    renderNotes(propVal);
+    renderNotes(notes, propVal);
 }
