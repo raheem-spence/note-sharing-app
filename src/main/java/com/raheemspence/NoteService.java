@@ -17,7 +17,8 @@ public class NoteService {
         return noteRepository.findAll();
     }
 
-    public void insertNote(Note note) {
+    public Note insertNote(Note note) {
         noteRepository.save(note);
+        return note;
     }
 }
