@@ -4,6 +4,7 @@ A Java Spring Boot app for creating, editing, and sharing notes via RESTful APIs
 ### Tech Stack
 
 Java (backend) — Spring Boot
+
 JavaScript, HTML, CSS (frontend)
 
 REST APIs for communication
