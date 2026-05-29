@@ -79,8 +79,10 @@ createBtn.addEventListener('click', function () {
     }).then(response => response.json()) // Parse JSON response
     .then(result => {
         console.log('note created:', result);
+        noteTextarea.value = "";
         loadNotes();
     }).catch(error => console.error('Error:', error));
+
     });
 
 
@@ -151,11 +153,22 @@ notesContainer.addEventListener('click', event => {
     if (event.target.classList.contains('delete-btn')) {
         // Get note id via delete button id
         const noteId = event.target.dataset.id;
+        console.log(noteId);
+
+        fetch(`http://localhost:8080/api/v2/notes/delete-note/${noteId}`, {
+            method: 'DELETE'
+        }).then(response => {
+            if (response.ok) {
+                console.log('Delete successful!');
+                notes = notes.filter(note => note.id !== Number(noteId));
+                renderNotes(notes, propVal);
+            }
+        }).catch(error => console.error('Error:', error))
 
         // Remove the note object with specific note id
-        notes = notes.filter(note => note.id !== Number(noteId));
+       // notes = notes.filter(note => note.id !== Number(noteId));
 
-        updateNotes(propVal);
+        //updateNotes(propVal);
     }
 
     // Update note
@@ -181,12 +194,24 @@ notesContainer.addEventListener('click', event => {
             const newPara = document.createElement('p');
             newPara.classList.add('note');
 
-            note.text = editTextArea.value;
-
             newPara.textContent = editTextArea.value;
             editTextArea.replaceWith(newPara);
 
-            updateNotes(propVal);
+            const updatedText = editTextArea.value;
+
+            fetch(`http://localhost:8080/api/v2/notes/update-note/${noteId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json' // Inform the server im sending JSON
+                },
+                body: JSON.stringify({text: updatedText}) // Convert object into JSON string
+            }).then(response => {
+                if (response.ok) {
+                    note.text = updatedText;
+                    updateNotes(propVal);
+                    console.log('Update successful!');
+                }
+            }).catch(error => console.error('Error:', error))
 
 
         } else {

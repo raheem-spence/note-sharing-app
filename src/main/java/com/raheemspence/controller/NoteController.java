@@ -1,6 +1,7 @@
-package com.raheemspence;
+package com.raheemspence.controller;
 
-import org.aspectj.weaver.ast.Not;
+import com.raheemspence.Note;
+import com.raheemspence.NoteService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
