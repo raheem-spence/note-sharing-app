@@ -204,7 +204,8 @@ notesContainer.addEventListener('click', event => {
                 headers: {
                     'Content-Type': 'application/json' // Inform the server im sending JSON
                 },
-                body: JSON.stringify({text: updatedText}) // Convert object into JSON string
+                body: JSON.stringify({text: updatedText}), // Convert object into JSON string
+                credentials: "include"
             }).then(response => {
                 if (response.ok) {
                     note.text = updatedText;
@@ -260,7 +261,9 @@ function saveNotes() {
 function loadNotes() {
 
     // Get notes from backend
-    fetch('http://localhost:8080/api/v2/notes')
+    fetch('http://localhost:8080/api/v2/notes', {
+        credentials: "include"
+    })
     .then(response => response.json())
     .then(data => {
         notes = data;

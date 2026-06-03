@@ -2,10 +2,21 @@
 GET http://localhost:8080/api/v2/notes
 
 ###
-POST http://localhost:8080/api/v2/notes
+POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "classId": "bio",
-  "text": "We have a test on friday about frogs..."
+  "email": "test@email.com",
+  "username": "raheem",
+  "password": "spence",
+  "confirmPassword": "spence"
+}
+
+###
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@email.com",
+  "password": "spence"
 }

@@ -1,5 +1,7 @@
-package com.raheemspence;
+package com.raheemspence.service;
 
+import com.raheemspence.model.Note;
+import com.raheemspence.repository.NoteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

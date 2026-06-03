@@ -13,12 +13,28 @@
  */
 package com.raheemspence.config;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import org.springframework.web.cors.CorsConfigurationSource;
+
+
+import java.util.List;
 
 /*
     This annotation basically means this class contains Spring configuration (setup instructions)
@@ -86,66 +102,29 @@ public class SecurityConfig {
             - NOTE: we are configuring how Spring should build the final object
      */
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        System.out.println("🔥 SECURITY CONFIG LOADED");
+        System.out.println("🔥 CSRF DISABLED");
+
+        HttpSessionSecurityContextRepository repo = securityContextRepository();  // reference your bean
 
         // http -- the security configuration object Spring gave us, it already exists we are just modifying it
         http
-                /*
-                    CRSF = Cross Site Request Forgery
-                    - this line basically means protect against fake requests being sent on behalf of a logged-in user
+                // 🔥 disable CSRF for now (simplifies API development)
+                .csrf(csrf -> csrf.disable())
 
-                    Spring will check incoming requests, ensure they are legit, block suspicious POST/PUT/DELETE actions
-                    if needed
-                 */
-                .csrf(Customizer.withDefaults())
-
-                /*
-                    This tells Spring to enable HTTP basic authentication for this app by adding a filter to the
-                    SecurityFilterChain that reads and validates credentials from HTTP request headers.
-
-                    It is a very simple login method built into HTTP itself
-
-                    The browser sends:
-                    Authorization: Basic ...
-
-                    That value is:
-                        - username:password
-                        - encoded in Base64 (NOT encrypted)
-
-                    So when it is enabled it:
-                        1. Checks incoming request headers
-                        2. Looks for Authorization: Basic ...
-                        3. Decodes credentials
-                        4. Validates username/password
-                        5. sets authentication in security context
-                 */
-                .httpBasic(Customizer.withDefaults())
-
-                /*
-                   This enables Springs default login system instead of having to write our own
-
-                   In practice --
-                   When someone hits a protected route:
-                       - Spring redirects to /login
-                       - Shows default login page
-                       - handles username/password authentication
-                       - creates session if successful
-                */
-                .formLogin(Customizer.withDefaults())
-
-                /*
-                    This is where you define who is allowed to access what.
-
-                    Basically it means every request requires authentication so at runtime:
-                    When someone hits GET /profile Spring checks:
-                        1. Are you logged in?
-                            yes -> allow request
-                            no -> redirect to login page
-
-
-                 */
-                .authorizeHttpRequests((authorize) -> authorize
+                // 🔥 CORS (IMPORTANT for frontend on 127.0.0.1:5500)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                .securityContext(ctx ->                    // ← ADD THIS
+                        ctx.securityContextRepository(repo)   // ← tells Spring where sessions live
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 );
+
                 /* this tells Spring to actually construct the real security system cause before we were configuring the
         builder basically designing the security system blueprint. Everything before this line is configuration(instructions)
 
@@ -182,4 +161,43 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+   
+//
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+//
+//
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        // ✅ Allow both origins
+        config.setAllowedOrigins(List.of(
+                "http://127.0.0.1:5500",
+                "http://localhost:5500"       // ← add this line
+        ));
+
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+
+        return source;
+    }
+
+    @Bean
+    public HttpSessionSecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }

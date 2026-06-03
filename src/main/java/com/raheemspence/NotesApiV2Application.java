@@ -13,8 +13,4 @@ public class NotesApiV2Application {
         SpringApplication.run(NotesApiV2Application.class, args);
     }
 
-    @GetMapping
-    public String helloWorld() {
-        return "Hello, world!";
-    }
 }
