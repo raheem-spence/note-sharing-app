@@ -4,6 +4,7 @@ import com.raheemspence.dto.NoteRequest;
 import com.raheemspence.dto.NoteResponse;
 import com.raheemspence.service.NoteService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -35,9 +36,11 @@ public class NoteController {
 
     /*
         @RequestBody tells Spring to take the incoming HTTP request JSON body and convert it into a Java object (dto)
+
+        @Valid tells Spring that before calling my method, validate the request body using annotations like @NotBlank
      */
     @PostMapping("/create")
-    public NoteResponse createNote(@RequestBody NoteRequest noteRequest, HttpSession httpSession) {
+    public NoteResponse createNote(@Valid @RequestBody NoteRequest noteRequest, HttpSession httpSession) {
         // Get user id
         Long userId = (Long) httpSession.getAttribute("userId");
 
@@ -58,7 +61,7 @@ public class NoteController {
      */
     @PutMapping("/{noteId}")
     public NoteResponse updateNote(@PathVariable Long noteId,
-                                   @RequestBody NoteRequest noteRequest,
+                                  @Valid @RequestBody NoteRequest noteRequest,
                                    HttpSession httpSession) {
         // Get user id from session
         Long userId = (Long) httpSession.getAttribute("userId");
