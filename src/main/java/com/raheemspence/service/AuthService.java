@@ -4,8 +4,11 @@ import com.raheemspence.dto.LoginRequest;
 import com.raheemspence.dto.SignupRequest;
 import com.raheemspence.model.User;
 import com.raheemspence.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -57,27 +60,26 @@ public class AuthService {
     }
 
     // Login logic
-    public Optional<User> login(LoginRequest request) {
+    public User login(LoginRequest request) {
 
-        // Find user by email
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        // Find user by email, throw exception if credentials invalid
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid credentials"
+                ));
 
-        // Check is user exists
-        if (userOptional.isEmpty()) {
-            // This Optional contains nothing, heres a box that is empty on purpose
-            return Optional.empty();
-        }
 
-        // if user exists, compare passwords
-        User user = userOptional.get();
-
-        if(passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+        if(!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             // Optional.of means im creating an Optional (container) that definitely contains a value so it must not be null
             // In other words, its like saying here is a box and i guarantee there is something inside it
-            return Optional.of(user);
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid credentials"
+            );
         }
 
-        return Optional.empty();
+        return user;
 
     }
 

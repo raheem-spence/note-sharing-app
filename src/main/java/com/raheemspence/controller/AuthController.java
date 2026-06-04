@@ -9,6 +9,7 @@ import com.raheemspence.repository.UserRepository;
 import com.raheemspence.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.aspectj.weaver.ast.Not;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,17 +29,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request, HttpSession httpSession) {
-        Optional<User> userOptional = authService.login(request);
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession httpSession) {
+        User user = authService.login(request);
 
-        if (userOptional.isEmpty()) {
-            // Login failed
-            return "Invalid credentials";
-        }
-        User user = userOptional.get();
         httpSession.setAttribute("userId", user.getId());
 
-        return "Login success";
+        return ResponseEntity.ok("Login successful");
     }
 
     @PostMapping("/signup")

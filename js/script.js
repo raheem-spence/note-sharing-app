@@ -8,32 +8,34 @@ if (loginBtn) {
     loginBtn.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        const username = document.getElementById("email").value;
+        const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
         console.log("LOGIN CLICKED!");
         console.log("FETCH STARTED");
 
         try {
-        const response = await fetch("http://localhost:8080/api/login", {
+        const response = await fetch("http://localhost:8080/auth/login", {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                username: username,
+                email: email,
                 password: password
             }),
-            credentials: "include"
+         
         });
 
         console.log("STATUS:", response.status);
+        console.log("OK?:", response.ok);
 
         if (response.ok) {
             console.log("LOGIN SUCCESSFULL");
 
             setTimeout(() => {
-                window.location.href = "classes.html";
+               window.location.href = "classes.html";
             }, 300);
         } else {
             console.log("LOGIN FAILED :(");
