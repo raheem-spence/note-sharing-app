@@ -99,6 +99,36 @@ public class NoteService {
         }
         noteRepository.delete(note);
     }
+
+    public NoteResponse updateNote(Long userId, Long noteId, NoteRequest noteRequest) {
+        // Get note else throw exception 404 NOT FOUND
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found"));
+
+        // Check if user is allowed to update note else throw 403 FORBIDDEN
+        if (!note.getOwner().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+            "You are not allowed to update this note"
+            );
+        }
+
+        // Set title and content from NoteRequest
+        note.setTitle(noteRequest.getTitle());
+        note.setContent(noteRequest.getContent());
+
+        Note savedNote = noteRepository.save(note);
+
+        NoteResponse noteResponse = new NoteResponse();
+        noteResponse.setId(savedNote.getId());
+        noteResponse.setTitle(savedNote.getTitle());
+        noteResponse.setContent(savedNote.getContent());
+        noteResponse.setOwnerId(savedNote.getOwner().getId());
+        noteResponse.setOwnerUsername(savedNote.getOwner().getUsername());
+        noteResponse.setCreatedAt(savedNote.getCreatedAt());
+
+
+        return noteResponse;
+    }
 }
 
 

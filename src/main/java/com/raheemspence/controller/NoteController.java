@@ -47,13 +47,22 @@ public class NoteController {
 
     @DeleteMapping("/{noteId}")
     public void deleteNote(@PathVariable Long noteId, HttpSession httpSession) {
-        System.out.println("DELETE HIT");
-        System.out.println("SESSION ID: " + httpSession.getId());
-        System.out.println("USER ID: " + httpSession.getAttribute("userId"));
-
         // Get user id
         Long userId = (Long) httpSession.getAttribute("userId");
 
         noteService.deleteNote(userId, noteId);
+    }
+
+    /*
+        @PathVariable takes data from the URL and passes it into a method parameter
+     */
+    @PutMapping("/{noteId}")
+    public NoteResponse updateNote(@PathVariable Long noteId,
+                                   @RequestBody NoteRequest noteRequest,
+                                   HttpSession httpSession) {
+        // Get user id from session
+        Long userId = (Long) httpSession.getAttribute("userId");
+
+        return noteService.updateNote(userId, noteId, noteRequest);
     }
 }

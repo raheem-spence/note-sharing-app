@@ -29,8 +29,17 @@ POST http://localhost:8080/notes/create
 Content-Type: application/json
 
 {
-  "title": "Third note",
+  "title": "New note",
   "content": "Testing creation of notes"
+}
+
+### Update note for logged in user
+PUT http://localhost:8080/notes/5
+Content-Type: application/json
+
+{
+  "title": "Updated note",
+  "content": "Testing updated note functionality"
 }
 
 ### Delete note for logged in user
