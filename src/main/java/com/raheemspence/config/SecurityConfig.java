@@ -23,10 +23,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -121,8 +117,8 @@ public class SecurityConfig {
                         ctx.securityContextRepository(repo)   // ← tells Spring where sessions live
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/auth/**", "/notes/**").permitAll()
+                        .anyRequest().permitAll()
                 );
 
                 /* this tells Spring to actually construct the real security system cause before we were configuring the
@@ -162,7 +158,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-   
+
 //
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

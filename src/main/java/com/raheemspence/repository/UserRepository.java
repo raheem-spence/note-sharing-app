@@ -25,4 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Similar query as above but for username and similar in return value
     Optional<User> findByUsername(String username);
+
+
 }

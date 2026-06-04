@@ -1,18 +1,18 @@
 ### GET request to example server
 GET http://localhost:8080/api/v2/notes
 
-###
+### Sign user up
 POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "email": "test@email.com",
-  "username": "raheem",
+  "email": "test2@email.com",
+  "username": "heem",
   "password": "spence",
   "confirmPassword": "spence"
 }
 
-###
+### Log user in
 POST http://localhost:8080/auth/login
 Content-Type: application/json
 
@@ -20,3 +20,18 @@ Content-Type: application/json
   "email": "test@email.com",
   "password": "spence"
 }
+
+### Get all notes for logged in user
+GET http://localhost:8080/notes
+
+### Create note for logged in user
+POST http://localhost:8080/notes/create
+Content-Type: application/json
+
+{
+  "title": "Third note",
+  "content": "Testing creation of notes"
+}
+
+### Delete note for logged in user
+DELETE http://localhost:8080/notes/4

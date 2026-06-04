@@ -2,11 +2,16 @@ package com.raheemspence.controller;
 
 import com.raheemspence.dto.LoginRequest;
 import com.raheemspence.dto.SignupRequest;
+import com.raheemspence.model.Note;
 import com.raheemspence.model.User;
+import com.raheemspence.repository.NoteRepository;
+import com.raheemspence.repository.UserRepository;
 import com.raheemspence.service.AuthService;
 import jakarta.servlet.http.HttpSession;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 // Means this class handles HTTP requests and returns data (not HTML pages)
@@ -22,7 +27,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request, HttpSession httpSession) {
         Optional<User> userOptional = authService.login(request);
@@ -33,12 +37,13 @@ public class AuthController {
         }
         User user = userOptional.get();
         httpSession.setAttribute("userId", user.getId());
-        return "Login success";
 
+        return "Login success";
     }
 
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequest request) {
         return authService.signup(request);
     }
+
 }

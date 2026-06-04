@@ -1,10 +1,12 @@
 package com.raheemspence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jdk.jfr.DataAmount;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
 
 /* This tells Spring/JPA that this class represents a database table. Each object becomes a row in the table
     @Table --> maps this entity to the users table, needed because class name is User but table name is users so
@@ -93,4 +95,11 @@ public class User {
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
+    /*
+        mappedBy = "owner" means the owner field inside Note is the source of truth
+
+        It tells hibernate -- dont create or manage this relationship from this side, the other side owns it.
+     */
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private List<Note> notes;
 }
