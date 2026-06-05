@@ -102,4 +102,7 @@ public class User {
      */
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
     private List<Note> notes;
+
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+    private List<Class> creatorClasses;
 }
