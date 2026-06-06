@@ -9,7 +9,7 @@ import java.time.Instant;
 @Setter
 public class CreateCourseResponse {
 
-    private String className;
+    private String courseName;
     private String school;
     private Instant createdAt;
     private String creatorUsername;

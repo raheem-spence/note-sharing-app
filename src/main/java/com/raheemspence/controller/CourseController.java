@@ -2,6 +2,8 @@ package com.raheemspence.controller;
 
 import com.raheemspence.dto.CreateCourseRequest;
 import com.raheemspence.dto.CreateCourseResponse;
+import com.raheemspence.dto.JoinCourseRequest;
+import com.raheemspence.dto.JoinCourseResponse;
 import com.raheemspence.service.CourseService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/class")
+@RequestMapping("/course")
 public class CourseController {
     private final CourseService courseService;
 
@@ -22,8 +24,18 @@ public class CourseController {
     @PostMapping("/create")
     public CreateCourseResponse createCourse(@Valid @RequestBody CreateCourseRequest createCourseRequest,
                                              HttpSession httpSession) {
+
         Long userId = (Long) httpSession.getAttribute("userId");
 
         return courseService.createCourse(userId, createCourseRequest);
+    }
+
+    @PostMapping("/join")
+    public JoinCourseResponse joinCourse(@RequestBody JoinCourseRequest joinCourseRequest,
+                                         HttpSession httpSession) {
+
+        Long userId = (Long) httpSession.getAttribute("userId");
+
+        return courseService.joinCourse(userId, joinCourseRequest);
     }
 }

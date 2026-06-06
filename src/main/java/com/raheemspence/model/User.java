@@ -107,5 +107,8 @@ public class User {
         This field is not stored as a list in the db, its a Java-side view that hibernate populates by querying all
         the classes rows whose creator_id matches the current user's id
      */
-    private List<Course> creatorClasses;
+    private List<Course> creatorCourses;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<CourseMembership> memberships;
 }

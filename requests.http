@@ -17,7 +17,7 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@email.com",
+  "email": "test2@email.com",
   "password": "spence"
 }
 
@@ -45,12 +45,21 @@ Content-Type: application/json
 ### Delete note for logged in user
 DELETE http://localhost:8080/notes/9999
 
-### Create class for logged in user
-POST http://localhost:8080/class/create
+### Create course for logged in user
+POST http://localhost:8080/course/create
 Content-Type: application/json
 
 {
   "className": "Chemistry",
   "school": "Bates College",
+  "joinCode": "321"
+}
+
+### Join class for logged in user
+POST http://localhost:8080/course/join
+Content-Type: application/json
+
+{
+  "courseName": "Chemistry",
   "joinCode": "321"
 }
