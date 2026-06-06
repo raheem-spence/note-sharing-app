@@ -1,8 +1,6 @@
 package com.raheemspence.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.*;
 
 import java.time.Instant;
@@ -97,6 +95,7 @@ public class User {
 
     /*
         mappedBy = "owner" means the owner field inside Note is the source of truth
+        Same thing for "creator", the creator field inside Class is the source of truth
 
         It tells hibernate -- dont create or manage this relationship from this side, the other side owns it.
      */
@@ -104,5 +103,9 @@ public class User {
     private List<Note> notes;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
-    private List<Class> creatorClasses;
+    /*
+        This field is not stored as a list in the db, its a Java-side view that hibernate populates by querying all
+        the classes rows whose creator_id matches the current user's id
+     */
+    private List<Course> creatorClasses;
 }

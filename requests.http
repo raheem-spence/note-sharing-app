@@ -44,3 +44,13 @@ Content-Type: application/json
 
 ### Delete note for logged in user
 DELETE http://localhost:8080/notes/9999
+
+### Create class for logged in user
+POST http://localhost:8080/class/create
+Content-Type: application/json
+
+{
+  "className": "Chemistry",
+  "school": "Bates College",
+  "joinCode": "321"
+}

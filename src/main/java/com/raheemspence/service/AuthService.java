@@ -5,16 +5,14 @@ import com.raheemspence.dto.SignupRequest;
 import com.raheemspence.model.User;
 import com.raheemspence.repository.UserRepository;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
 
 /*
     This annotation is for business logic. It marks a class as a Spring managed business logic component that Spring
-    automatically creates and injects where needed, otherwise we would have have to manually do new AuthService() because
+    automatically creates and injects where needed, otherwise we would have to manually do new AuthService() because
     Spring would ignore this class without the annotation.
  */
 @Service
