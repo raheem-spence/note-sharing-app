@@ -15,4 +15,6 @@ public class NoteResponse {
     private Instant createdAt;
     private Long ownerId;
     private String ownerUsername;
+    private String courseName;
+    private Long courseId;
 }

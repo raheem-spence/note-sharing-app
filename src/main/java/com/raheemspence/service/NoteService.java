@@ -2,8 +2,10 @@ package com.raheemspence.service;
 
 import com.raheemspence.dto.NoteRequest;
 import com.raheemspence.dto.NoteResponse;
+import com.raheemspence.model.Course;
 import com.raheemspence.model.Note;
 import com.raheemspence.model.User;
+import com.raheemspence.repository.CourseRepository;
 import com.raheemspence.repository.NoteRepository;
 import com.raheemspence.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -19,10 +21,14 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
-    public NoteService(NoteRepository noteRepository, UserRepository userRepository) {
+    public NoteService(NoteRepository noteRepository,
+                       UserRepository userRepository,
+                       CourseRepository courseRepository) {
         this.noteRepository = noteRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     public List<NoteResponse> getNotesByUserId(Long userId) {
@@ -59,16 +65,24 @@ public class NoteService {
         return noteResponseList;
     }
 
-    public NoteResponse createNote(Long userId, NoteRequest noteRequest) {
+    public NoteResponse createNote(Long userId, Long courseId, NoteRequest noteRequest) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Course not found")
+                );
 
         Note note = new Note();
 
         note.setTitle(noteRequest.getTitle());
         note.setContent(noteRequest.getContent());
         note.setOwner(user);
+        note.setCourse(course);
+
 
         Note savedNote = noteRepository.save(note);
 
@@ -80,6 +94,8 @@ public class NoteService {
         noteResponse.setOwnerUsername(user.getUsername());
         noteResponse.setCreatedAt(savedNote.getCreatedAt());
         noteResponse.setId(savedNote.getId());
+        noteResponse.setCourseId(course.getId());
+        noteResponse.setCourseName(course.getName());
 
         return noteResponse;
 

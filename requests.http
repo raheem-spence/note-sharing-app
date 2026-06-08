@@ -17,20 +17,20 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "email": "test2@email.com",
+  "email": "test@email.com",
   "password": "spence"
 }
 
 ### Get all notes for logged in user
 GET http://localhost:8080/notes
 
-### Create note for logged in user
-POST http://localhost:8080/notes/create
+### Create note for logged in user for specific class
+POST http://localhost:8080/notes/create/1
 Content-Type: application/json
 
 {
-  "title": "hi",
-  "content": ""
+  "title": "Test note",
+  "content": "Testing creating note with course id in url path"
 }
 
 ### Update note for logged in user

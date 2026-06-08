@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 
 /*
     This annotation tells JPA (Java Persistence API) that this class should be persisted in a db table where each
@@ -91,5 +92,8 @@ public class Course {
      Java objects
      */
     private User creator;
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<Note> notes;
 
 }

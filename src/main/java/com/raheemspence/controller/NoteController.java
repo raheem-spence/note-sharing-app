@@ -39,12 +39,13 @@ public class NoteController {
 
         @Valid tells Spring that before calling my method, validate the request body using annotations like @NotBlank
      */
-    @PostMapping("/create")
-    public NoteResponse createNote(@Valid @RequestBody NoteRequest noteRequest, HttpSession httpSession) {
+    @PostMapping("/create/{courseId}")
+    public NoteResponse createNote(@Valid @RequestBody NoteRequest noteRequest, @PathVariable Long courseId,
+                                   HttpSession httpSession) {
         // Get user id
         Long userId = (Long) httpSession.getAttribute("userId");
 
-        return noteService.createNote(userId, noteRequest);
+        return noteService.createNote(userId, courseId, noteRequest);
 
     }
 
