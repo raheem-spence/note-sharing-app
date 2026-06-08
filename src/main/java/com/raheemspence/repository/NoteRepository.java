@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
     List<Note> findByOwnerId(Long ownerId);
+
+    List<Note> findByCourseId(Long courseId);
 }

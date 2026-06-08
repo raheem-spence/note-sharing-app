@@ -17,33 +17,33 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@email.com",
+  "email": "test2@email.com",
   "password": "spence"
 }
 
-### Get all notes for logged in user
-GET http://localhost:8080/notes
+### Get all course specific note for logged in user
+GET http://localhost:8080/courses/1/notes
 
-### Create note for logged in user for specific class
-POST http://localhost:8080/notes/create/1
+### Create note for logged in user for specific course
+POST http://localhost:8080/courses/1/notes
 Content-Type: application/json
 
 {
-  "title": "Test note",
-  "content": "Testing creating note with course id in url path"
+  "title": "Test note 3",
+  "content": "Testing updating note with course membership in mind"
 }
 
 ### Update note for logged in user
-PUT http://localhost:8080/notes/5
+PUT http://localhost:8080/courses/1/notes/10
 Content-Type: application/json
 
 {
-  "title": "",
-  "content": "Testing updated note functionality"
+  "title": "Update test 3",
+  "content": "Testing updated note functionality with course membership in mind"
 }
 
-### Delete note for logged in user
-DELETE http://localhost:8080/notes/9999
+### Delete note for logged in user for specific course
+DELETE http://localhost:8080/courses/1/notes/9
 
 ### Create course for logged in user
 POST http://localhost:8080/course/create

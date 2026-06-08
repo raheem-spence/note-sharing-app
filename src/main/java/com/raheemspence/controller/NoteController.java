@@ -12,7 +12,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
-@RequestMapping("/notes")
+@RequestMapping("/courses")
 public class NoteController {
 
     private final NoteService noteService;
@@ -22,8 +22,8 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-    @GetMapping
-    public List<NoteResponse> getNotes(HttpSession httpSession) {
+    @GetMapping("/{courseId}/notes")
+    public List<NoteResponse> getNotes(@PathVariable Long courseId, HttpSession httpSession) {
 
         // Get user by id
         Long userId = (Long) httpSession.getAttribute("userId");
@@ -31,7 +31,7 @@ public class NoteController {
         if (userId == null) {
             return List.of();
         }
-        return noteService.getNotesByUserId(userId);
+        return noteService.getNotesByCourseId(userId, courseId);
     }
 
     /*
@@ -39,7 +39,7 @@ public class NoteController {
 
         @Valid tells Spring that before calling my method, validate the request body using annotations like @NotBlank
      */
-    @PostMapping("/create/{courseId}")
+    @PostMapping("/{courseId}/notes")
     public NoteResponse createNote(@Valid @RequestBody NoteRequest noteRequest, @PathVariable Long courseId,
                                    HttpSession httpSession) {
         // Get user id
@@ -49,24 +49,24 @@ public class NoteController {
 
     }
 
-    @DeleteMapping("/{noteId}")
-    public void deleteNote(@PathVariable Long noteId, HttpSession httpSession) {
+    @DeleteMapping("/{courseId}/notes/{noteId}")
+    public void deleteNote(@PathVariable Long noteId, @PathVariable Long courseId, HttpSession httpSession) {
         // Get user id
         Long userId = (Long) httpSession.getAttribute("userId");
 
-        noteService.deleteNote(userId, noteId);
+        noteService.deleteNote(userId, noteId, courseId);
     }
 
     /*
         @PathVariable takes data from the URL and passes it into a method parameter
      */
-    @PutMapping("/{noteId}")
+    @PutMapping("/{courseId}/notes/{noteId}")
     public NoteResponse updateNote(@PathVariable Long noteId,
-                                  @Valid @RequestBody NoteRequest noteRequest,
-                                   HttpSession httpSession) {
+                                   @Valid @RequestBody NoteRequest noteRequest,
+                                   HttpSession httpSession, @PathVariable Long courseId) {
         // Get user id from session
         Long userId = (Long) httpSession.getAttribute("userId");
 
-        return noteService.updateNote(userId, noteId, noteRequest);
+        return noteService.updateNote(userId, noteId, courseId, noteRequest);
     }
 }

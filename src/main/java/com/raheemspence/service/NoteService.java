@@ -5,6 +5,7 @@ import com.raheemspence.dto.NoteResponse;
 import com.raheemspence.model.Course;
 import com.raheemspence.model.Note;
 import com.raheemspence.model.User;
+import com.raheemspence.repository.CourseMembershipRepository;
 import com.raheemspence.repository.CourseRepository;
 import com.raheemspence.repository.NoteRepository;
 import com.raheemspence.repository.UserRepository;
@@ -22,18 +23,36 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final CourseMembershipRepository courseMembershipRepository;
 
     public NoteService(NoteRepository noteRepository,
                        UserRepository userRepository,
-                       CourseRepository courseRepository) {
+                       CourseRepository courseRepository,
+                       CourseMembershipRepository courseMembershipRepository) {
         this.noteRepository = noteRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
+        this.courseMembershipRepository = courseMembershipRepository;
     }
 
-    public List<NoteResponse> getNotesByUserId(Long userId) {
+    public List<NoteResponse> getNotesByCourseId(Long userId, Long courseId) {
+        // Check if user is a member of the course
+        if (!courseMembershipRepository.existsByUserIdAndCourseId(userId, courseId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You do not have access to course"
+            );
+        }
+
+        // Get course
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Course not found")
+                );
+
         // Get notes as a list
-        List<Note> notes = noteRepository.findByOwnerId(userId);
+        List<Note> notes = noteRepository.findByCourseId(courseId);
 
         // Create new list to store NoteResponse dto's
         List<NoteResponse> noteResponseList = new ArrayList<>();
@@ -57,6 +76,8 @@ public class NoteService {
             noteResponse.setCreatedAt(createdAt);
             noteResponse.setOwnerId(ownerId);
             noteResponse.setOwnerUsername(username);
+            noteResponse.setCourseId(course.getId());
+            noteResponse.setCourseName(course.getName());
 
             // Add dto to list
             noteResponseList.add(noteResponse);
@@ -66,6 +87,13 @@ public class NoteService {
     }
 
     public NoteResponse createNote(Long userId, Long courseId, NoteRequest noteRequest) {
+        // Check if user is member of the course
+        if (!courseMembershipRepository.existsByUserIdAndCourseId(userId, courseId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You do not have access to course"
+            );
+        }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -101,7 +129,15 @@ public class NoteService {
 
     }
 
-    public void deleteNote(Long userId, Long noteId) {
+    public void deleteNote(Long userId, Long noteId, Long courseId) {
+        // Check if user is member of the course
+        if (!courseMembershipRepository.existsByUserIdAndCourseId(userId, courseId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You do not have access to course"
+            );
+        }
+
         // Get note else throw exception 404 NOT FOUND
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found"));
@@ -116,21 +152,39 @@ public class NoteService {
         noteRepository.delete(note);
     }
 
-    public NoteResponse updateNote(Long userId, Long noteId, NoteRequest noteRequest) {
+    public NoteResponse updateNote(Long userId, Long noteId, Long courseId, NoteRequest noteRequest) {
+        // Check if user is member of the course
+        if (!courseMembershipRepository.existsByUserIdAndCourseId(userId, courseId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You do not have access to course"
+            );
+        }
+
         // Get note else throw exception 404 NOT FOUND
         Note note = noteRepository.findById(noteId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found"));
 
         // Check if user is allowed to update note else throw 403 FORBIDDEN
         if (!note.getOwner().getId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
             "You are not allowed to update this note"
             );
         }
 
+        // Get course
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Course not found")
+                );
+
+
         // Set title and content from NoteRequest
         note.setTitle(noteRequest.getTitle());
         note.setContent(noteRequest.getContent());
+        note.setCourse(course);
 
         Note savedNote = noteRepository.save(note);
 
@@ -141,7 +195,8 @@ public class NoteService {
         noteResponse.setOwnerId(savedNote.getOwner().getId());
         noteResponse.setOwnerUsername(savedNote.getOwner().getUsername());
         noteResponse.setCreatedAt(savedNote.getCreatedAt());
-
+        noteResponse.setCourseName(course.getName());
+        noteResponse.setCourseId(courseId);
 
         return noteResponse;
     }
