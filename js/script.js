@@ -33,10 +33,8 @@ if (loginBtn) {
 
         if (response.ok) {
             console.log("LOGIN SUCCESSFULL");
-
-            setTimeout(() => {
-               window.location.href = "classes.html";
-            }, 300);
+            window.location.href = "courses.html";
+    
         } else {
             console.log("LOGIN FAILED :(");
         }

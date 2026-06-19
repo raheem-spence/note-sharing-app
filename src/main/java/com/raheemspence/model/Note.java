@@ -25,7 +25,7 @@ public class Note {
 
         Fetching means loading data from the db. Lazy means only load the User if someone asks for it, so dont load it
         right away. Lazy is used because say we have 1000 notes, if every note automatically loaded owner, permissions,
-        etc. youd get tons of data you may never use. Lazy avoids that -- leads to less data, less memory, faster queries,
+        etc. you'd get tons of data you may never use. Lazy avoids that -- leads to less data, less memory, faster queries,
         more control.
 
         ManytoOne means many Note objects can reference one User object

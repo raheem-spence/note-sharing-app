@@ -29,21 +29,21 @@ POST http://localhost:8080/courses/1/notes
 Content-Type: application/json
 
 {
-  "title": "Test note 3",
-  "content": "Testing updating note with course membership in mind"
+  "title": "Test note 4",
+  "content": "Testing creating note again"
 }
 
 ### Update note for logged in user
-PUT http://localhost:8080/courses/1/notes/10
+PUT http://localhost:8080/courses/1/notes/11
 Content-Type: application/json
 
 {
-  "title": "Update test 3",
+  "title": "Update test note 4",
   "content": "Testing updated note functionality with course membership in mind"
 }
 
 ### Delete note for logged in user for specific course
-DELETE http://localhost:8080/courses/1/notes/9
+DELETE http://localhost:8080/courses/1/notes/11
 
 ### Create course for logged in user
 POST http://localhost:8080/course/create
