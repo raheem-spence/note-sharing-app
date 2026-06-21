@@ -38,12 +38,15 @@ body{
 } */
 
 aside{
+    display: flex;
+    flex-direction: column;
     height: 100vh;
     top: 0;
     position: sticky;
     align-self: start;
     grid-area: sidebar;
     background-color: var(--base-clr);
+    padding: 10px;
 
 }
 
@@ -58,17 +61,12 @@ aside{
     margin-right: 6px;
 }
 
-span {
-    font-size: 0.75rem;
-}
-
 #sidebar a{
     text-decoration: none;
     color: white;
     border-radius: .5em;
     display: flex;
     align-items: center;
-    margin: 1em;
     padding: 0.5em;
 }
 
@@ -93,14 +91,38 @@ article{
     padding: 0.5em;
 }
 
-li p {
+.sidebar-label {
     color: #a4a6a8;
     font-size: 0.85rem;
     margin-left: 15px;
     margin-bottom: 0;
 }
 
-#join-course {
+.join-course-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #2e3048;
+    color: white;
     border-radius: 4px;
+    width: 200px;
+    height: 50px;
+    border: 0.5px solid rgb(99, 98, 98);
+}
+
+.plus-sign {
+    font-size: xx-large;
+    margin-right: 10px;
+    color: #5e63ff;
+}
+
+.join-course-btn:hover {
+    background-color: #d9dcea;
+    color: var(--accent-clr);
+    cursor: pointer;
+}
+
+.sidebar-user {
+    color: white;
+    margin-top: auto;
 }
