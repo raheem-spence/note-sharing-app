@@ -33,7 +33,7 @@ if (loginBtn) {
 
         if (response.ok) {
             console.log("LOGIN SUCCESSFULL");
-            window.location.href = "courses.html";
+            window.location.href = "test.html";
     
         } else {
             console.log("LOGIN FAILED :(");
