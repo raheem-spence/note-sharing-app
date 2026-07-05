@@ -5,6 +5,8 @@
     --hover-clr: #222533;
     --text-clr: #e6e6ef;
     --accent-clr: #5e63ff;
+    --btn-clr: #444af7;
+    --btn-clr-hover: #2c32c4;
     --secondary-text-clr: #b0b3c1;
     --sidebar-clr: #F6F7FD;
     --border-clr: #E5E7EB;
@@ -12,6 +14,9 @@
     --accent-border: #D8DCFF;
     --hover-clr-light: #d9dcea;
     --icon-clr: #dbe2f1;
+    --del-btn-clr: #c70000;
+    --gray-border: #E4E3E3;
+    --active-course-clr: #d7ddf9; 
 }
 
 *, *::before, *::after{
@@ -78,19 +83,89 @@ aside{
 
 
 #sidebar ul li.active a{
-    color: var(--accent-clr);
+    background-color: var(--active-course-clr);
 
     svg{
         fill: var(--accent-clr);
     }
 }
 
-article{
+#sidebar ul li svg{
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+    text-align: center;
+    padding: 1px;
+    margin-right: 0.5rem;
+}
+
+.notes-container-heading{
+    margin-top: 1em;
+}
+
+#new-note-btn{
+    width: 125px;
+    background-color: var(--btn-clr);
+    border-radius: 4px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#new-note-btn:hover{
+    background-color: var(--btn-clr-hover);
+}
+.notes-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.2rem;
+}
+
+.note-card{
     border-radius: .5em;
-    background-color: green;
-    box-shadow: 10px 10px #11121a;
-    margin: 1em;
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    margin: 1rem 0;
+    gap: 2rem;
     padding: 0.5em;
+}
+
+
+.edit-delete{
+    display: flex;
+    justify-content: space-evenly;
+    border-top: 0.5px solid rgb(219, 217, 217);
+    margin-top: 0.25em;
+    padding: 0.5em;
+}
+
+.edit-btn, .del-btn{
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.edit-btn svg, .del-btn svg{
+    height: 15px;
+    margin-right: 0.3em;
+    
+}
+
+.edit-btn{
+    color: var(--accent-clr)
+}
+
+.del-btn{
+    color: var(--del-btn-clr);
+}
+
+.time-elapsed{
+    font-size: 0.85rem;
+    color: gray;
+    margin-bottom: 0.65em;
 }
 
 .sidebar-label {
@@ -157,6 +232,8 @@ article{
     margin-right: 0.5rem;
 }
 
+
+
 .course {
     font-size: 0.8rem;
 }
@@ -195,4 +272,71 @@ article{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.course-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-bar-container {
+    display: flex;
+    position: relative;
+    gap: 1.25rem;
+}
+
+.search-bar input{
+    border-radius: 5px;
+    border: 0.5px solid var(--gray-border);
+    width: 250px;
+    padding: 0.7em;
+    padding-left: 2.5em;
+
+}
+
+.search-bar span{
+    position: absolute;
+    left: 9px;
+    top: 5px;
+}
+
+.new-note-container{
+    border-radius: 5px;
+    border: 0.5px solid  var(--gray-border);
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15);
+    margin-top: 1rem;
+    padding: 1em;
+}
+
+.textarea-container{
+    position: relative;
+}
+
+.textarea-container textarea{
+    border-radius: 5px;
+    border: 0.7px solid  var(--gray-border);
+    resize: none;
+    padding: 0.7em;
+    padding-bottom: 2.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.75rem;
+}
+
+.textarea-container button{
+    position: absolute;
+    top: 175px;
+    right: 15px;
+    padding: 0.6em;
+    background-color: var(--btn-clr);
+    border-radius: 4px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+}
+
+.textarea-container button:hover{
+    background-color: var(--btn-clr-hover);
 }
