@@ -84,10 +84,10 @@ aside{
 
 #sidebar ul li.active a{
     background-color: var(--active-course-clr);
+}
 
-    svg{
-        fill: var(--accent-clr);
-    }
+#sidebar ul li.active a svg{
+    fill: var(--accent-clr);
 }
 
 #sidebar ul li svg{
@@ -222,20 +222,15 @@ aside{
     margin-bottom: 1.25rem;
 }
 
-.course-icon {
-    background-color: var(--icon-clr);
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 0.25rem;
-    text-align: center;
-    padding: 1px;
-    margin-right: 0.5rem;
+.course-name {
+    font-size: 0.8rem;
 }
 
-
-
-.course {
-    font-size: 0.8rem;
+.active{
+    background-color: var(--active-course-clr);
+    fill: var(--accent-clr);
+    border-radius: .5em;
+    font-weight: 600;
 }
 
 .user-icon img {
@@ -318,7 +313,7 @@ aside{
     border: 0.7px solid  var(--gray-border);
     resize: none;
     padding: 0.7em;
-    padding-bottom: 2.5rem;
+    padding-bottom: 3.5rem;
     width: 100%;
     box-sizing: border-box;
     margin-top: 0.75rem;
@@ -326,7 +321,7 @@ aside{
 
 .textarea-container button{
     position: absolute;
-    top: 175px;
+    bottom: 10px;
     right: 15px;
     padding: 0.6em;
     background-color: var(--btn-clr);
