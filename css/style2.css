@@ -15,6 +15,7 @@
     --hover-clr-light: #d9dcea;
     --icon-clr: #dbe2f1;
     --del-btn-clr: #c70000;
+    --hover-del-btn-clr: #610000;
     --gray-border: #E4E3E3;
     --active-course-clr: #d7ddf9; 
 }
@@ -146,11 +147,12 @@ aside{
     align-items: center;
     cursor: pointer;
     font-size: 0.85rem;
+    padding: 0.75rem;
 }
 
 .edit-btn svg, .del-btn svg{
     height: 15px;
-    margin-right: 0.3em;
+    margin-right: 0.4em;
     
 }
 
@@ -160,6 +162,10 @@ aside{
 
 .del-btn{
     color: var(--del-btn-clr);
+}
+
+.del-btn:hover{
+    color: var(--hover-del-btn-clr);
 }
 
 .time-elapsed{

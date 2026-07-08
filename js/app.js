@@ -1,9 +1,4 @@
-const fakeNotes = [
-    {id: 1, title: "Chemical Bonding Basics", elapsedTime: "2 hours ago",
-    preview: "An overview of ionic, covalent and metallic bonds. Key differences in electronegativity and bond formation..."},
-    {id: 2, title: "Stoichiometry Overview", elapsedTime: "1 day ago", 
-    preview: "Notes on mole concepts, molar mass calculations, and balancing chemical equations with practice examples."}
-];
+const fakeNotes = [];
 
 const currentPath = window.location.pathname;
 
@@ -21,27 +16,103 @@ courses.forEach(course => {
 const noteContainer = document.getElementById("notes-container");
 
 
+// CREATE NOTE
+// get create note button id
+const createNoteBtn = document.getElementById("create-note-btn");
+
+const newTitleInput = document.getElementById("note-title-input");
+
+const newTextAreaInput = document.getElementById("note-content-input");
+
+
+// Our ID generator function
+const getNextId = (function () {
+    let counter = 0;
+    return function () {
+    return ++counter;
+    };
+})();
+
+createNoteBtn.addEventListener('click', event => {
+    // Read the value property of title input
+    const newTitleValue = newTitleInput.value.trim();
+
+    // read the value property of textarea
+    const newTextAreaValue = newTextAreaInput.value.trim();
+  
+
+    // Validate title and content
+    if (newTitleValue.length == 0) {
+        alert("Invalid title");
+    } else if (newTextAreaValue.length == 0) {
+        alert("Invalid content");
+    } else {
+        const noteData = {id: getNextId(), title: newTitleValue, createdAt: "Just now", content: newTextAreaValue}
+
+        fakeNotes.push(noteData);
+    
+        renderNotes(fakeNotes);
+        newTitleInput.value = "";
+        newTextAreaInput.value = "";
+    
+    }
+})
+
+// DELETE NOTE
+noteContainer.addEventListener('click', event => {
+
+    const delBtnItem = event.target.closest('button');
+
+    // Exit if button not clicked
+    if(!delBtnItem) {
+        return
+
+    // Exit if delete button is not clicked
+    } else if (!delBtnItem.classList.contains('del-btn')) {
+        return
+    }
+
+    // find the closest note card from delete button
+    const closestNoteCard = delBtnItem.closest('.note-card');
+
+    // Get index of matching note in fakeNotes
+    const index = fakeNotes.findIndex(note => note.id == closestNoteCard.dataset.id);
+
+    // If index is found
+    if (index !== -1) {
+        // remove one element at index
+        fakeNotes.splice(index, 1);
+    }
+    
+    renderNotes(fakeNotes);
+
+})
+
+
 function renderNotes(notes){
     // clear notes container
     noteContainer.replaceChildren();
 
     // loop through fake notes array
-    for (const note of notes) {
+    for (const noteData of notes) {
         // create a new article element
-        const newNote = document.createElement('article');
+        const noteCard = document.createElement('article');
+
+        const noteId = noteData.id;
+        noteCard.dataset.id = noteId;
 
         // create a heading element for title
         const newTitle = document.createElement('h4');
-        newTitle.textContent = note.title;
+        newTitle.textContent = noteData.title;
 
         // create a paragraph element for elapsed time
         const newElapsedTime = document.createElement('p');
-        newElapsedTime.textContent = note.elapsedTime;
+        newElapsedTime.textContent = noteData.createdAt;
         newElapsedTime.classList.add("time-elapsed");
 
         // create a paragraph element for preview content
-        const newPreview = document.createElement('p');
-        newPreview.textContent = note.preview;
+        const newContent= document.createElement('p');
+        newContent.textContent = noteData.content;
 
         // create div for edit/delete buttons
         const btnsDiv = document.createElement('div');
@@ -49,6 +120,7 @@ function renderNotes(notes){
         // edit and delete buttons
         const editBtn = document.createElement('button');
         editBtn.classList.add("edit-btn");
+    
 
         const delBtn = document.createElement('button');
         delBtn.classList.add("del-btn");
@@ -108,13 +180,13 @@ function renderNotes(notes){
         btnsDiv.append(editBtn, delBtn);
 
         // give it the note-card class
-        newNote.classList.add("note-card")
+        noteCard.classList.add("note-card")
 
         // append inner elements to article element
-        newNote.append(newTitle, newElapsedTime, newPreview, btnsDiv);
+        noteCard.append(newTitle, newElapsedTime, newContent, btnsDiv);
 
         // add it to the notes container
-        noteContainer.append(newNote);
+        noteContainer.append(noteCard);
     }
 }
 
