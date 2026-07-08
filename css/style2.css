@@ -309,6 +309,7 @@ aside{
 }
 
 .textarea-container textarea{
+    font-family: inherit;
     border-radius: 5px;
     border: 0.7px solid  var(--gray-border);
     resize: none;
@@ -334,4 +335,16 @@ aside{
 
 .textarea-container button:hover{
     background-color: var(--btn-clr-hover);
+}
+
+.title-container input{
+    font-family: inherit;
+    border-radius: 5px;
+    border: 0.7px solid  var(--gray-border);
+    resize: none;
+    padding: 0.7em;
+    padding-bottom: 0.75em;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.75rem;
 }
