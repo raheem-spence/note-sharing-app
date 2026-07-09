@@ -67,7 +67,7 @@ createNoteBtn.addEventListener('click', async () => {
 })
 
 // DELETE NOTE
-noteContainer.addEventListener('click', event => {
+noteContainer.addEventListener('click', async (event) => {
 
     const delBtnItem = event.target.closest('button');
 
@@ -78,22 +78,29 @@ noteContainer.addEventListener('click', event => {
     // exit if delete button is not clicked
     } else if (!delBtnItem.classList.contains('del-btn')) {
         return
+    } 
+
+    try {
+          // find the closest note card from delete button
+        const closestNoteCard = delBtnItem.closest('.note-card');
+        const noteCardId = closestNoteCard.dataset.id;
+
+        const response = await fetch(`http://127.0.0.1:8080/courses/1/notes/${noteCardId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        if (response.status === 403) {
+            console.log('You do not have permission to delete this note.')
+        } else if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`)
+        } else {
+        await loadNotes(1);
+        }
+
+    } catch (error) {
+        console.log(error);
     }
-
-    // find the closest note card from delete button
-    const closestNoteCard = delBtnItem.closest('.note-card');
-
-    // Get index of matching note in fakeNotes
-    const index = fakeNotes.findIndex(note => note.id == closestNoteCard.dataset.id);
-
-    // If index is found
-    if (index !== -1) {
-        // remove one element at index
-        fakeNotes.splice(index, 1);
-    }
-    
-    renderNotes(fakeNotes);
-
 })
 
 
@@ -221,7 +228,6 @@ async function loadNotes(courseId) {
 
         // 3. parse the stream data into a JSON object
         const notes = await response.json();
-        console.log(notes);
         renderNotes(notes);
     } catch (error) {
         // catches network errors or errors thrown above
