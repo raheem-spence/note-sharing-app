@@ -9,7 +9,7 @@ import java.time.Instant;
 @Setter
 public class NoteResponse {
 
-    private Long Id;
+    private Long id;
     private String title;
     private String content;
     private Instant createdAt;

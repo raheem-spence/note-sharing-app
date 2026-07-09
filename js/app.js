@@ -24,17 +24,8 @@ const newTitleInput = document.getElementById("note-title-input");
 
 const newTextAreaInput = document.getElementById("note-content-input");
 
-
-// Our ID generator function
-const getNextId = (function () {
-    let counter = 0;
-    return function () {
-    return ++counter;
-    };
-})();
-
-createNoteBtn.addEventListener('click', event => {
-    // Read the value property of title input
+createNoteBtn.addEventListener('click', async () => {
+    // read the value property of title input
     const newTitleValue = newTitleInput.value.trim();
 
     // read the value property of textarea
@@ -47,14 +38,31 @@ createNoteBtn.addEventListener('click', event => {
     } else if (newTextAreaValue.length == 0) {
         alert("Invalid content");
     } else {
-        const noteData = {id: getNextId(), title: newTitleValue, createdAt: "Just now", content: newTextAreaValue}
+        const noteData = {title: newTitleValue, content: newTextAreaValue}
 
-        fakeNotes.push(noteData);
-    
-        renderNotes(fakeNotes);
-        newTitleInput.value = "";
-        newTextAreaInput.value = "";
-    
+        try {
+            const response = await fetch('http://127.0.0.1:8080/courses/1/notes', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(noteData) // converts JS object into a JSON string
+            });
+
+            if(!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const newNote = await response.json();
+
+            await loadNotes(1);
+
+            newTitleInput.value = "";
+            newTextAreaInput.value = "";
+        } catch (error) {
+            console.log('Error:', error);
+        } 
     }
 })
 
@@ -63,11 +71,11 @@ noteContainer.addEventListener('click', event => {
 
     const delBtnItem = event.target.closest('button');
 
-    // Exit if button not clicked
+    // exit if button not clicked
     if(!delBtnItem) {
         return
 
-    // Exit if delete button is not clicked
+    // exit if delete button is not clicked
     } else if (!delBtnItem.classList.contains('del-btn')) {
         return
     }
@@ -90,105 +98,135 @@ noteContainer.addEventListener('click', event => {
 
 
 function renderNotes(notes){
+    
     // clear notes container
     noteContainer.replaceChildren();
 
-    // loop through fake notes array
-    for (const noteData of notes) {
-        // create a new article element
-        const noteCard = document.createElement('article');
+    if (notes.length === 0){
+        const emptyNotesMessage = document.createElement('h4');
+        emptyNotesMessage.textContent = "Notes you add appear here"
+        emptyNotesMessage.classList.add('empty-note-msg');
 
-        const noteId = noteData.id;
-        noteCard.dataset.id = noteId;
+        noteContainer.appendChild(emptyNotesMessage);
 
-        // create a heading element for title
-        const newTitle = document.createElement('h4');
-        newTitle.textContent = noteData.title;
+        return
+    } else {
 
-        // create a paragraph element for elapsed time
-        const newElapsedTime = document.createElement('p');
-        newElapsedTime.textContent = noteData.createdAt;
-        newElapsedTime.classList.add("time-elapsed");
+        for (const noteData of notes) {
 
-        // create a paragraph element for preview content
-        const newContent= document.createElement('p');
-        newContent.textContent = noteData.content;
+            const noteCard = document.createElement('article');
 
-        // create div for edit/delete buttons
-        const btnsDiv = document.createElement('div');
+            const noteId = noteData.id;
+            noteCard.dataset.id = noteId;
 
-        // edit and delete buttons
-        const editBtn = document.createElement('button');
-        editBtn.classList.add("edit-btn");
-    
+            const newTitle = document.createElement('h4');
+            newTitle.textContent = noteData.title;
 
-        const delBtn = document.createElement('button');
-        delBtn.classList.add("del-btn");
+          
+            const newElapsedTime = document.createElement('p');
+            newElapsedTime.textContent = noteData.createdAt;
+            newElapsedTime.classList.add("time-elapsed");
 
-        const svgNS = "http://www.w3.org/2000/svg"
+        
+            const newContent= document.createElement('p');
+            newContent.textContent = noteData.content;
 
-        // edit svg 
-        const svgEditBtnContainer = document.createElementNS(svgNS, 'svg');
+            // create div for edit/delete buttons
+            const btnsDiv = document.createElement('div');
 
-        const editPathElement = document.createElementNS(svgNS, 'path');
+            // edit and delete buttons
+            const editBtn = document.createElement('button');
+            editBtn.classList.add("edit-btn");
+        
 
-        svgEditBtnContainer.setAttribute("viewBox", "0 0 24 24");
-        svgEditBtnContainer.setAttribute("fill", "none");
-        svgEditBtnContainer.setAttribute("stroke-width", "1.5")
-        svgEditBtnContainer.setAttribute("stroke", "currentColor");
-        svgEditBtnContainer.setAttribute("class", "size-6");
+            const delBtn = document.createElement('button');
+            delBtn.classList.add("del-btn");
 
-        editPathElement.setAttribute("stroke-linecap", "round");
-        editPathElement.setAttribute("stroke-linejoin", "round");
-        editPathElement.setAttribute("d", "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10");
+            const svgNS = "http://www.w3.org/2000/svg"
 
-        // span element for edit button text
-        const editSpan = document.createElement('span');
-        editSpan.textContent = "Edit";
+            // edit svg 
+            const svgEditBtnContainer = document.createElementNS(svgNS, 'svg');
 
-        svgEditBtnContainer.appendChild(editPathElement);
+            const editPathElement = document.createElementNS(svgNS, 'path');
 
-        editBtn.append(svgEditBtnContainer, editSpan);
+            svgEditBtnContainer.setAttribute("viewBox", "0 0 24 24");
+            svgEditBtnContainer.setAttribute("fill", "none");
+            svgEditBtnContainer.setAttribute("stroke-width", "1.5")
+            svgEditBtnContainer.setAttribute("stroke", "currentColor");
+            svgEditBtnContainer.setAttribute("class", "size-6");
+
+            editPathElement.setAttribute("stroke-linecap", "round");
+            editPathElement.setAttribute("stroke-linejoin", "round");
+            editPathElement.setAttribute("d", "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10");
+
+            const editSpan = document.createElement('span');
+            editSpan.textContent = "Edit";
+
+            svgEditBtnContainer.appendChild(editPathElement);
+
+            editBtn.append(svgEditBtnContainer, editSpan);
 
 
 
-        // delete svg
-        const svgDelBtnContainer = document.createElementNS(svgNS, 'svg');
+            // delete svg
+            const svgDelBtnContainer = document.createElementNS(svgNS, 'svg');
 
-        const delPathElement = document.createElementNS(svgNS, 'path');
+            const delPathElement = document.createElementNS(svgNS, 'path');
 
-        svgDelBtnContainer.setAttribute("viewBox", "0 0 24 24");
-        svgDelBtnContainer.setAttribute("fill", "none");
-        svgDelBtnContainer.setAttribute("stroke-width", "1.5")
-        svgDelBtnContainer.setAttribute("stroke", "currentColor");
-        svgDelBtnContainer.setAttribute("class", "size-6");
+            svgDelBtnContainer.setAttribute("viewBox", "0 0 24 24");
+            svgDelBtnContainer.setAttribute("fill", "none");
+            svgDelBtnContainer.setAttribute("stroke-width", "1.5")
+            svgDelBtnContainer.setAttribute("stroke", "currentColor");
+            svgDelBtnContainer.setAttribute("class", "size-6");
 
-        delPathElement.setAttribute("stroke-linecap", "round");
-        delPathElement.setAttribute("stroke-linejoin", "round");
-        delPathElement.setAttribute("d", "m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0");
+            delPathElement.setAttribute("stroke-linecap", "round");
+            delPathElement.setAttribute("stroke-linejoin", "round");
+            delPathElement.setAttribute("d", "m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0");
 
-        // span element for delete button text
-        const delSpan = document.createElement('span');
-        delSpan.textContent = "Delete";
+            const delSpan = document.createElement('span');
+            delSpan.textContent = "Delete";
 
-        svgDelBtnContainer.appendChild(delPathElement);
+            svgDelBtnContainer.appendChild(delPathElement);
 
-        delBtn.append(svgDelBtnContainer, delSpan);
+            delBtn.append(svgDelBtnContainer, delSpan);
 
-        btnsDiv.classList.add("edit-delete");
+            btnsDiv.classList.add("edit-delete");
 
-        btnsDiv.append(editBtn, delBtn);
+            btnsDiv.append(editBtn, delBtn);
 
-        // give it the note-card class
-        noteCard.classList.add("note-card")
+            noteCard.classList.add("note-card")
 
-        // append inner elements to article element
-        noteCard.append(newTitle, newElapsedTime, newContent, btnsDiv);
+            // append inner elements to article element
+            noteCard.append(newTitle, newElapsedTime, newContent, btnsDiv);
 
-        // add it to the notes container
-        noteContainer.append(noteCard);
+            noteContainer.append(noteCard);
+        }
     }
 }
 
-renderNotes(fakeNotes);
 
+
+async function loadNotes(courseId) {
+    try {
+        // 1. send the network request
+        const response = await fetch('http://127.0.0.1:8080/courses/1/notes', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        // 2. check if response status is OK
+        if (!response.ok) {
+            throw new Error(`Http error! Status: ${response.status}`);
+        }
+
+        // 3. parse the stream data into a JSON object
+        const notes = await response.json();
+        console.log(notes);
+        renderNotes(notes);
+    } catch (error) {
+        // catches network errors or errors thrown above
+        console.error('Fetch failed:', error);
+    }
+}
+
+loadNotes(1);

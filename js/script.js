@@ -15,7 +15,7 @@ if (loginBtn) {
         console.log("FETCH STARTED");
 
         try {
-        const response = await fetch("http://localhost:8080/auth/login", {
+        const response = await fetch("http://127.0.0.1:8080/auth/login", {
             method: "POST",
             credentials: "include",
             headers: {
@@ -33,7 +33,7 @@ if (loginBtn) {
 
         if (response.ok) {
             console.log("LOGIN SUCCESSFULL");
-            window.location.href = "test.html";
+            window.location.href = "chemistry.html";
     
         } else {
             console.log("LOGIN FAILED :(");

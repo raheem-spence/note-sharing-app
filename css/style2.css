@@ -104,19 +104,6 @@ aside{
     margin-top: 1em;
 }
 
-#new-note-btn{
-    width: 125px;
-    background-color: var(--btn-clr);
-    border-radius: 4px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#new-note-btn:hover{
-    background-color: var(--btn-clr-hover);
-}
 .notes-container{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -353,4 +340,9 @@ aside{
     width: 100%;
     box-sizing: border-box;
     margin-top: 0.75rem;
+}
+
+.empty-note-msg{
+    text-align: center;
+    margin-top: 50px;
 }
