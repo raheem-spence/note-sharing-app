@@ -346,3 +346,7 @@ aside{
     text-align: center;
     margin-top: 50px;
 }
+
+.note-content {
+    color: black;
+}

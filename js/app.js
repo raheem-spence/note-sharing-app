@@ -15,6 +15,8 @@ courses.forEach(course => {
 
 const noteContainer = document.getElementById("notes-container");
 
+let currentlyEditingNoteId = null;
+
 
 // CREATE NOTE
 // get create note button id
@@ -40,70 +42,134 @@ createNoteBtn.addEventListener('click', async () => {
     } else {
         const noteData = {title: newTitleValue, content: newTextAreaValue}
 
-        try {
-            const response = await fetch('http://127.0.0.1:8080/courses/1/notes', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(noteData) // converts JS object into a JSON string
-            });
+        if (currentlyEditingNoteId === null) {
 
-            if(!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+            try {
+                const response = await fetch('http://127.0.0.1:8080/courses/1/notes', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(noteData) // converts JS object into a JSON string
+                });
+
+                if(!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                await loadNotes(1);
+
+                newTitleInput.value = "";
+                newTextAreaInput.value = "";
+            } catch (error) {
+                console.log('Error:', error);
+            } 
+        } else if (currentlyEditingNoteId !== null) {
+                const updateNoteTitle = newTitleInput.value.trim();
+                const udpateNoteContent = newTextAreaInput.value.trim();
+
+                // validate title and content
+                if (updateNoteTitle.length === 0){
+                    alert("Invalid title");
+                } else if (udpateNoteContent.length === 0) {
+                    alert("Invalid content");
+                } else {
+                    const updateNoteData = {title: updateNoteTitle, content: udpateNoteContent}
+
+                    try {
+                        const response = await fetch(`http://127.0.0.1:8080/courses/1/notes/${currentlyEditingNoteId}`, {
+                            method: 'PUT',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updateNoteData)
+        
+                        })
+
+                        if(response.status === 403) {
+                            console.log("You do not have permission to edit this note.")
+                            newTitleInput.value = "";
+                            newTextAreaInput.value = "";
+                            createNoteBtn.textContent = "Create Note";
+                            currentlyEditingNoteId = null;
+                        }
+                        
+                        if(!response.ok) {
+                            throw new Error(`HTTP Error! Status: ${response.status}`);
+                        }
+
+                        await loadNotes(1);
+                        newTitleInput.value = "";
+                        newTextAreaInput.value = "";
+                        createNoteBtn.textContent = "Create Note";
+                        currentlyEditingNoteId = null;
+        
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
             }
+        }
+    })
 
-            const newNote = await response.json();
 
-            await loadNotes(1);
-
-            newTitleInput.value = "";
-            newTextAreaInput.value = "";
-        } catch (error) {
-            console.log('Error:', error);
-        } 
-    }
-})
-
-// DELETE NOTE
+// DELETE & EDIT NOTE
 noteContainer.addEventListener('click', async (event) => {
 
-    const delBtnItem = event.target.closest('button');
+    // find the closet button from target
+    const btnItem = event.target.closest('button');
 
-    // exit if button not clicked
-    if(!delBtnItem) {
+    if(!btnItem) {
         return
-
-    // exit if delete button is not clicked
-    } else if (!delBtnItem.classList.contains('del-btn')) {
-        return
-    } 
-
-    try {
-          // find the closest note card from delete button
-        const closestNoteCard = delBtnItem.closest('.note-card');
-        const noteCardId = closestNoteCard.dataset.id;
-
-        const response = await fetch(`http://127.0.0.1:8080/courses/1/notes/${noteCardId}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-
-        if (response.status === 403) {
-            console.log('You do not have permission to delete this note.')
-        } else if (!response.ok) {
-            throw new Error(`HTTP Error! Status: ${response.status}`)
-        } else {
-        await loadNotes(1);
-        }
-
-    } catch (error) {
-        console.log(error);
     }
+     
+    // find the closest note card from button
+    const closestNoteCard = btnItem.closest('.note-card');
+    const noteCardId = closestNoteCard.dataset.id;
+
+    // if edit button clicked
+    if(btnItem.classList.contains('edit-btn')) {
+
+        currentlyEditingNoteId = noteCardId;
+        
+        // fill form with old title/content
+        const origTitle = closestNoteCard.querySelector('h4');
+        const origContentPara = closestNoteCard.querySelector('p.note-content');
+
+        newTitleInput.value = origTitle.textContent;
+        newTextAreaInput.value = origContentPara.textContent;
+
+        // change btn text to 'Update Note'
+        createNoteBtn.textContent = "Update Note";
+
+        // if delete button clicked
+        } else if (btnItem.classList.contains('del-btn')) {
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8080/courses/1/notes/${noteCardId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                if (response.status === 403) {
+                    console.log('You do not have permission to delete this note.')
+                } else if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`)
+                } else {
+                await loadNotes(1);
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
 })
 
 
+// READ NOTES
 function renderNotes(notes){
     
     // clear notes container
@@ -137,6 +203,7 @@ function renderNotes(notes){
         
             const newContent= document.createElement('p');
             newContent.textContent = noteData.content;
+            newContent.classList.add("note-content");
 
             // create div for edit/delete buttons
             const btnsDiv = document.createElement('div');
