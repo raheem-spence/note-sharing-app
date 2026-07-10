@@ -93,6 +93,7 @@ createNoteBtn.addEventListener('click', async () => {
                             newTextAreaInput.value = "";
                             createNoteBtn.textContent = "Create Note";
                             currentlyEditingNoteId = null;
+                            return
                         }
                         
                         if(!response.ok) {
