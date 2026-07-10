@@ -1,6 +1,5 @@
-const fakeNotes = [];
-
 const currentPath = window.location.pathname;
+const courseId = 1;
 
 let courses = document.querySelectorAll(".course");
 
@@ -45,7 +44,7 @@ createNoteBtn.addEventListener('click', async () => {
         if (currentlyEditingNoteId === null) {
 
             try {
-                const response = await fetch('http://127.0.0.1:8080/courses/1/notes', {
+                const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -58,7 +57,7 @@ createNoteBtn.addEventListener('click', async () => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                await loadNotes(1);
+                await loadNotes(courseId);
 
                 newTitleInput.value = "";
                 newTextAreaInput.value = "";
@@ -78,7 +77,7 @@ createNoteBtn.addEventListener('click', async () => {
                     const updateNoteData = {title: updateNoteTitle, content: udpateNoteContent}
 
                     try {
-                        const response = await fetch(`http://127.0.0.1:8080/courses/1/notes/${currentlyEditingNoteId}`, {
+                        const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes/${currentlyEditingNoteId}`, {
                             method: 'PUT',
                             credentials: 'include',
                             headers: {
@@ -100,7 +99,7 @@ createNoteBtn.addEventListener('click', async () => {
                             throw new Error(`HTTP Error! Status: ${response.status}`);
                         }
 
-                        await loadNotes(1);
+                        await loadNotes(courseId);
                         newTitleInput.value = "";
                         newTextAreaInput.value = "";
                         createNoteBtn.textContent = "Create Note";
@@ -149,7 +148,7 @@ noteContainer.addEventListener('click', async (event) => {
         } else if (btnItem.classList.contains('del-btn')) {
 
             try {
-                const response = await fetch(`http://127.0.0.1:8080/courses/1/notes/${noteCardId}`, {
+                const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes/${noteCardId}`, {
                     method: 'DELETE',
                     credentials: 'include'
                 });
@@ -159,7 +158,7 @@ noteContainer.addEventListener('click', async (event) => {
                 } else if (!response.ok) {
                     throw new Error(`HTTP Error! Status: ${response.status}`)
                 } else {
-                await loadNotes(1);
+                await loadNotes(courseId);
                 }
 
             } catch (error) {
@@ -283,7 +282,7 @@ function renderNotes(notes){
 async function loadNotes(courseId) {
     try {
         // 1. send the network request
-        const response = await fetch('http://127.0.0.1:8080/courses/1/notes', {
+        const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -302,4 +301,4 @@ async function loadNotes(courseId) {
     }
 }
 
-loadNotes(1);
+loadNotes(courseId);
