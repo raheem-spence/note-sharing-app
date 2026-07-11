@@ -50,7 +50,7 @@ POST http://localhost:8080/course/create
 Content-Type: application/json
 
 {
-  "className": "Chemistry",
+  "courseName": "Chemistry",
   "school": "Bates College",
   "joinCode": "321"
 }

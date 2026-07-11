@@ -1,5 +1,58 @@
+// Show user courses
+async function fetchCourses() {
+    try {
+        // 1. send the network request
+        const response = await fetch('http://127.0.0.1:8080/course/my-courses', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        // 2. check if response status is ok
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`)
+        }
+
+        // 3. parse the stream data into a json object
+        const courses = await response.json();
+        console.log(courses);
+        renderCourses(courses);
+
+    } catch (error) {
+        console.log('Fetch failed:', error);
+    }
+}
+
+let courseId = 1;
+
+fetchCourses();
+
+const ulContainer = document.getElementById('course-list');
+
+// Render sidebar courses
+function renderCourses(courses) {
+    // clear ul container
+    ulContainer.replaceChildren();
+
+    for (const course of courses) {
+        const courseLi = document.createElement('li');
+        courseLi.classList.add('course');
+
+        const courseATag = document.createElement('a');
+        courseATag.href = `/html/course/${course.id}.html`;
+
+        const courseName = document.createElement('span');
+        courseName.classList.add('course-name');
+        courseName.textContent = course.name;
+
+        courseATag.appendChild(courseName);
+
+        courseLi.appendChild(courseATag);
+        ulContainer.appendChild(courseLi);
+    }
+}
+
+
 const currentPath = window.location.pathname;
-const courseId = 1;
 
 let courses = document.querySelectorAll(".course");
 
