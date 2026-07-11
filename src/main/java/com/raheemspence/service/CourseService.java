@@ -1,9 +1,6 @@
 package com.raheemspence.service;
 
-import com.raheemspence.dto.CreateCourseRequest;
-import com.raheemspence.dto.CreateCourseResponse;
-import com.raheemspence.dto.JoinCourseRequest;
-import com.raheemspence.dto.JoinCourseResponse;
+import com.raheemspence.dto.*;
 import com.raheemspence.model.Course;
 import com.raheemspence.model.CourseMembership;
 import com.raheemspence.model.User;
@@ -13,6 +10,9 @@ import com.raheemspence.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CourseService {
@@ -28,6 +28,34 @@ public class CourseService {
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
         this.courseMembershipRepository = courseMembershipRepository;
+    }
+
+    public List<CourseResponse> getCoursesByUserId(Long userId) {
+
+        // Get list of course memberships
+        List<CourseMembership> courseMemberships = courseMembershipRepository.findByUserId(userId);
+
+        // Create new list to store CourseResponse dto's
+        List<CourseResponse> courseResponseList = new ArrayList<>();
+
+        // Loop through list of notes and retrieve fields to populate CourseResponse dto's
+        for (CourseMembership courseMembership: courseMemberships) {
+            Course course = courseMembership.getCourse();
+
+            Long id = course.getId();
+            String name = course.getName();
+
+            CourseResponse courseResponse = new CourseResponse();
+
+            // Populate dto
+            courseResponse.setId(id);
+            courseResponse.setName(name);
+
+            // add dto to list
+            courseResponseList.add(courseResponse);
+        }
+
+        return courseResponseList;
     }
 
     public CreateCourseResponse createCourse(Long userId, CreateCourseRequest createCourseRequest) {

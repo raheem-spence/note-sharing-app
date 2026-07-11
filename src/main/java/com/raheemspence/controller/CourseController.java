@@ -1,17 +1,15 @@
 package com.raheemspence.controller;
 
-import com.raheemspence.dto.CreateCourseRequest;
-import com.raheemspence.dto.CreateCourseResponse;
-import com.raheemspence.dto.JoinCourseRequest;
-import com.raheemspence.dto.JoinCourseResponse;
+import com.raheemspence.dto.*;
 import com.raheemspence.service.CourseService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/course")
 public class CourseController {
@@ -19,6 +17,18 @@ public class CourseController {
 
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
+    }
+
+    @GetMapping("/my-courses")
+    public List<CourseResponse> getCourses(HttpSession httpSession) {
+        // Get user by id
+        Long userId = (Long) httpSession.getAttribute("userId");
+
+        if (userId == null) {
+            return List.of();
+        }
+
+        return courseService.getCoursesByUserId(userId);
     }
 
     @PostMapping("/create")
