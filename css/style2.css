@@ -219,6 +219,7 @@ aside{
     font-size: 0.8rem;
 }
 
+
 .active{
     background-color: var(--active-course-clr);
     fill: var(--accent-clr);

@@ -1,3 +1,12 @@
+const baseCourseUrl = 'http://127.0.0.1:5500/html/course.html';
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const courseId = urlParams.get('courseId');
+
+
+const courseTitle = document.getElementById('course-title');
+
+
 // Show user courses
 async function fetchCourses() {
     try {
@@ -14,7 +23,6 @@ async function fetchCourses() {
 
         // 3. parse the stream data into a json object
         const courses = await response.json();
-        console.log(courses);
         renderCourses(courses);
 
     } catch (error) {
@@ -22,9 +30,8 @@ async function fetchCourses() {
     }
 }
 
-let courseId = 1;
-
 fetchCourses();
+
 
 const ulContainer = document.getElementById('course-list');
 
@@ -32,13 +39,19 @@ const ulContainer = document.getElementById('course-list');
 function renderCourses(courses) {
     // clear ul container
     ulContainer.replaceChildren();
+    const fieldName = "courseId";
 
     for (const course of courses) {
+        const url = new URL(baseCourseUrl);
         const courseLi = document.createElement('li');
         courseLi.classList.add('course');
 
+
         const courseATag = document.createElement('a');
-        courseATag.href = `/html/course/${course.id}.html`;
+        const fieldValue = course.id;
+        url.searchParams.set(fieldName, fieldValue);
+
+        courseATag.href = url.toString();
 
         const courseName = document.createElement('span');
         courseName.classList.add('course-name');
@@ -49,21 +62,26 @@ function renderCourses(courses) {
         courseLi.appendChild(courseATag);
         ulContainer.appendChild(courseLi);
     }
+
+    const sideBarCourses = document.querySelectorAll('li.course');
+
+
+    const currentHref = window.location.href
+    sideBarCourses.forEach(course => {
+        const currentCourse = course.querySelector("a");
+        const href = currentCourse.getAttribute("href");
+
+        if(href == currentHref){
+                course.classList.add("active");
+        }
+    });
+
+    const currentCourseName = document.querySelector('.course.active');
+    courseTitle.textContent = currentCourseName.textContent + " Notes";
+
 }
 
 
-const currentPath = window.location.pathname;
-
-let courses = document.querySelectorAll(".course");
-
-courses.forEach(course => {
-    const currentCourse = course.querySelector("a");
-    const href = currentCourse.getAttribute("href");
-
-    if(href == currentPath){
-            course.classList.add("active");
-    }
-});
 
 const noteContainer = document.getElementById("notes-container");
 
@@ -220,6 +238,8 @@ noteContainer.addEventListener('click', async (event) => {
             }
         }
 })
+
+
 
 
 // READ NOTES
