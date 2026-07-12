@@ -33,7 +33,7 @@ if (loginBtn) {
 
         if (response.ok) {
             console.log("LOGIN SUCCESSFULL");
-            window.location.href = "chemistry.html";
+            window.location.href = "course.html";
     
         } else {
             console.log("LOGIN FAILED :(");

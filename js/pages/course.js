@@ -1,39 +1,41 @@
+import { fetchCourses } from "../api/courses.js";
+import { loadNotes, createNote } from "../api/notes.js";
+
+// ---------- Configuration ---------- 
 const baseCourseUrl = 'http://127.0.0.1:5500/html/course.html';
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const courseId = urlParams.get('courseId');
 
 
+// ---------- DOM Elements ---------- 
 const courseTitle = document.getElementById('course-title');
 
-
-// Show user courses
-async function fetchCourses() {
-    try {
-        // 1. send the network request
-        const response = await fetch('http://127.0.0.1:8080/course/my-courses', {
-            method: 'GET',
-            credentials: 'include'
-        });
-
-        // 2. check if response status is ok
-        if (!response.ok) {
-            throw new Error(`HTTP Error! Status: ${response.status}`)
-        }
-
-        // 3. parse the stream data into a json object
-        const courses = await response.json();
-        renderCourses(courses);
-
-    } catch (error) {
-        console.log('Fetch failed:', error);
-    }
-}
-
-fetchCourses();
-
+const noteContainer = document.getElementById("notes-container");
 
 const ulContainer = document.getElementById('course-list');
+
+const createNoteBtn = document.getElementById("create-note-btn");
+
+const newTitleInput = document.getElementById("note-title-input");
+
+
+// ---------- App State ---------- 
+
+let currentlyEditingNoteId = null;
+
+// ---------- Initialization ---------- 
+
+// Show user courses
+const courses = await fetchCourses();
+renderCourses(courses);
+
+// Show user notes
+
+await refreshNotes(courseId);
+
+
+// ---------- Sidebar ---------- 
 
 // Render sidebar courses
 function renderCourses(courses) {
@@ -64,36 +66,16 @@ function renderCourses(courses) {
     }
 
     const sideBarCourses = document.querySelectorAll('li.course');
-
-
-    const currentHref = window.location.href
-    sideBarCourses.forEach(course => {
-        const currentCourse = course.querySelector("a");
-        const href = currentCourse.getAttribute("href");
-
-        if(href == currentHref){
-                course.classList.add("active");
-        }
-    });
+    highlightActiveCourse(sideBarCourses);
 
     const currentCourseName = document.querySelector('.course.active');
-    courseTitle.textContent = currentCourseName.textContent + " Notes";
-
+    updateHeading(currentCourseName);
 }
 
-
-
-const noteContainer = document.getElementById("notes-container");
-
-let currentlyEditingNoteId = null;
-
+// ---------- Notes CRUD ---------- 
 
 // CREATE NOTE
 // get create note button id
-const createNoteBtn = document.getElementById("create-note-btn");
-
-const newTitleInput = document.getElementById("note-title-input");
-
 const newTextAreaInput = document.getElementById("note-content-input");
 
 createNoteBtn.addEventListener('click', async () => {
@@ -114,27 +96,11 @@ createNoteBtn.addEventListener('click', async () => {
 
         if (currentlyEditingNoteId === null) {
 
-            try {
-                const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(noteData) // converts JS object into a JSON string
-                });
+            await createNote(courseId, noteData);
+            await refreshNotes(courseId);
+    
+            clearInputs();
 
-                if(!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                await loadNotes(courseId);
-
-                newTitleInput.value = "";
-                newTextAreaInput.value = "";
-            } catch (error) {
-                console.log('Error:', error);
-            } 
         } else if (currentlyEditingNoteId !== null) {
                 const updateNoteTitle = newTitleInput.value.trim();
                 const udpateNoteContent = newTextAreaInput.value.trim();
@@ -160,8 +126,7 @@ createNoteBtn.addEventListener('click', async () => {
 
                         if(response.status === 403) {
                             console.log("You do not have permission to edit this note.")
-                            newTitleInput.value = "";
-                            newTextAreaInput.value = "";
+                            clearInputs();
                             createNoteBtn.textContent = "Create Note";
                             currentlyEditingNoteId = null;
                             return
@@ -171,9 +136,8 @@ createNoteBtn.addEventListener('click', async () => {
                             throw new Error(`HTTP Error! Status: ${response.status}`);
                         }
 
-                        await loadNotes(courseId);
-                        newTitleInput.value = "";
-                        newTextAreaInput.value = "";
+                        await refreshNotes(courseId);
+                        clearInputs();
                         createNoteBtn.textContent = "Create Note";
                         currentlyEditingNoteId = null;
         
@@ -185,62 +149,6 @@ createNoteBtn.addEventListener('click', async () => {
             }
         }
     })
-
-
-// DELETE & EDIT NOTE
-noteContainer.addEventListener('click', async (event) => {
-
-    // find the closet button from target
-    const btnItem = event.target.closest('button');
-
-    if(!btnItem) {
-        return
-    }
-     
-    // find the closest note card from button
-    const closestNoteCard = btnItem.closest('.note-card');
-    const noteCardId = closestNoteCard.dataset.id;
-
-    // if edit button clicked
-    if(btnItem.classList.contains('edit-btn')) {
-
-        currentlyEditingNoteId = noteCardId;
-        
-        // fill form with old title/content
-        const origTitle = closestNoteCard.querySelector('h4');
-        const origContentPara = closestNoteCard.querySelector('p.note-content');
-
-        newTitleInput.value = origTitle.textContent;
-        newTextAreaInput.value = origContentPara.textContent;
-
-        // change btn text to 'Update Note'
-        createNoteBtn.textContent = "Update Note";
-
-        // if delete button clicked
-        } else if (btnItem.classList.contains('del-btn')) {
-
-            try {
-                const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes/${noteCardId}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-
-                if (response.status === 403) {
-                    console.log('You do not have permission to delete this note.')
-                } else if (!response.ok) {
-                    throw new Error(`HTTP Error! Status: ${response.status}`)
-                } else {
-                await loadNotes(courseId);
-                }
-
-            } catch (error) {
-                console.log(error);
-            }
-        }
-})
-
-
-
 
 // READ NOTES
 function renderNotes(notes){
@@ -352,27 +260,84 @@ function renderNotes(notes){
 }
 
 
+// DELETE & EDIT NOTE
+noteContainer.addEventListener('click', async (event) => {
 
-async function loadNotes(courseId) {
-    try {
-        // 1. send the network request
-        const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes`, {
-            method: 'GET',
-            credentials: 'include'
-        });
+    // find the closet button from target
+    const btnItem = event.target.closest('button');
 
-        // 2. check if response status is OK
-        if (!response.ok) {
-            throw new Error(`Http error! Status: ${response.status}`);
-        }
-
-        // 3. parse the stream data into a JSON object
-        const notes = await response.json();
-        renderNotes(notes);
-    } catch (error) {
-        // catches network errors or errors thrown above
-        console.error('Fetch failed:', error);
+    if(!btnItem) {
+        return
     }
+     
+    // find the closest note card from button
+    const closestNoteCard = btnItem.closest('.note-card');
+    const noteCardId = closestNoteCard.dataset.id;
+
+    // if edit button clicked
+    if(btnItem.classList.contains('edit-btn')) {
+
+        currentlyEditingNoteId = noteCardId;
+        
+        // fill form with old title/content
+        const origTitle = closestNoteCard.querySelector('h4');
+        const origContentPara = closestNoteCard.querySelector('p.note-content');
+
+        newTitleInput.value = origTitle.textContent;
+        newTextAreaInput.value = origContentPara.textContent;
+
+        // change btn text to 'Update Note'
+        createNoteBtn.textContent = "Update Note";
+
+        // if delete button clicked
+        } else if (btnItem.classList.contains('del-btn')) {
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes/${noteCardId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                if (response.status === 403) {
+                    console.log('You do not have permission to delete this note.')
+                } else if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`)
+                } else {
+                await refreshNotes(courseId);
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+})
+
+// ---------- Rendering ---------- 
+
+function highlightActiveCourse(sideBarCourses) {
+    const currentHref = window.location.href
+    sideBarCourses.forEach(course => {
+        const currentCourse = course.querySelector("a");
+        const href = currentCourse.getAttribute("href");
+
+        if(href == currentHref){
+                course.classList.add("active");
+        }
+    });
 }
 
-loadNotes(courseId);
+function updateHeading(currentCourse) {
+    courseTitle.textContent = currentCourse.textContent + " Notes";
+}
+
+async function refreshNotes(courseId) {
+    const notes = await loadNotes(courseId);
+    renderNotes(notes);
+}
+
+function clearInputs() {
+    newTitleInput.value = "";
+    newTextAreaInput.value = "";
+}
+
+

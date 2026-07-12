@@ -1,0 +1,21 @@
+export async function fetchCourses() {
+    try {
+        // 1. send the network request
+        const response = await fetch('http://127.0.0.1:8080/course/my-courses', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        // 2. check if response status is ok
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`)
+        }
+
+        // 3. parse the stream data into a json object
+        const courses = await response.json();
+        return courses;
+
+    } catch (error) {
+        console.log('Fetch failed:', error);
+    }
+}
