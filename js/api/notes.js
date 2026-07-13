@@ -40,3 +40,29 @@ export async function createNote(courseId, noteData) {
         console.log('Error:', error);
     } 
 }
+
+export async function updateNote(courseId, noteData, noteId) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes/${noteId}`, {
+            method: 'PUT',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(noteData)
+        });
+
+        if(response.status === 403) {
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return true;
+
+    } catch (error) {
+        console.log('Error:', error)
+    }
+}

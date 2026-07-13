@@ -1,5 +1,5 @@
 import { fetchCourses } from "../api/courses.js";
-import { loadNotes, createNote } from "../api/notes.js";
+import { loadNotes, createNote, updateNote } from "../api/notes.js";
 
 // ---------- Configuration ---------- 
 const baseCourseUrl = 'http://127.0.0.1:5500/html/course.html';
@@ -80,75 +80,25 @@ const newTextAreaInput = document.getElementById("note-content-input");
 
 createNoteBtn.addEventListener('click', async () => {
     // read the value property of title input
-    const newTitleValue = newTitleInput.value.trim();
+    const noteTitle = newTitleInput.value.trim();
 
     // read the value property of textarea
-    const newTextAreaValue = newTextAreaInput.value.trim();
+    const noteContent = newTextAreaInput.value.trim();
   
+    const isValid = validateInputs(noteTitle, noteContent);
 
-    // Validate title and content
-    if (newTitleValue.length == 0) {
-        alert("Invalid title");
-    } else if (newTextAreaValue.length == 0) {
-        alert("Invalid content");
+    if (!isValid) {
+        alert("Invalid input");
+        return
+    }
+  
+    if (currentlyEditingNoteId === null) {
+        await handleCreate(noteTitle, noteContent, courseId);
     } else {
-        const noteData = {title: newTitleValue, content: newTextAreaValue}
+        await handleUpdate(noteTitle, noteContent, courseId, currentlyEditingNoteId);
+    }
 
-        if (currentlyEditingNoteId === null) {
-
-            await createNote(courseId, noteData);
-            await refreshNotes(courseId);
-    
-            clearInputs();
-
-        } else if (currentlyEditingNoteId !== null) {
-                const updateNoteTitle = newTitleInput.value.trim();
-                const udpateNoteContent = newTextAreaInput.value.trim();
-
-                // validate title and content
-                if (updateNoteTitle.length === 0){
-                    alert("Invalid title");
-                } else if (udpateNoteContent.length === 0) {
-                    alert("Invalid content");
-                } else {
-                    const updateNoteData = {title: updateNoteTitle, content: udpateNoteContent}
-
-                    try {
-                        const response = await fetch(`http://127.0.0.1:8080/courses/${courseId}/notes/${currentlyEditingNoteId}`, {
-                            method: 'PUT',
-                            credentials: 'include',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(updateNoteData)
-        
-                        })
-
-                        if(response.status === 403) {
-                            console.log("You do not have permission to edit this note.")
-                            clearInputs();
-                            createNoteBtn.textContent = "Create Note";
-                            currentlyEditingNoteId = null;
-                            return
-                        }
-                        
-                        if(!response.ok) {
-                            throw new Error(`HTTP Error! Status: ${response.status}`);
-                        }
-
-                        await refreshNotes(courseId);
-                        clearInputs();
-                        createNoteBtn.textContent = "Create Note";
-                        currentlyEditingNoteId = null;
-        
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
-
-            }
-        }
-    })
+})
 
 // READ NOTES
 function renderNotes(notes){
@@ -338,6 +288,46 @@ async function refreshNotes(courseId) {
 function clearInputs() {
     newTitleInput.value = "";
     newTextAreaInput.value = "";
+}
+
+
+function validateInputs(title, content) {
+    // Validate title and content
+    if (title.length == 0) {
+        return false;
+    } else if (content.length == 0) {
+        return false;
+    }
+
+    return true;
+}
+
+
+async function handleCreate(title, content, courseId) {
+    const noteData = {title: title, content: content}
+
+    await createNote(courseId, noteData);
+    await refreshNotes(courseId);
+
+    clearInputs();
+}
+
+async function handleUpdate(title, content, courseId, noteId) {
+    const noteData = {title: title, content: content}
+
+    const canUpdate = await updateNote(courseId, noteData, noteId);
+
+    if (!canUpdate) {
+        console.log("You do not have permission to edit this note.");
+        clearInputs();
+        createNoteBtn.textContent = "Create Note";
+        currentlyEditingNoteId = null;
+    } else {
+        await refreshNotes(courseId);
+        clearInputs();
+        createNoteBtn.textContent = "Create Note";
+        currentlyEditingNoteId = null;
+    }
 }
 
 
