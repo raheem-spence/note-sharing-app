@@ -64,7 +64,8 @@ public class NoteService {
             String content = note.getContent();
             Instant createdAt = note.getCreatedAt();
             Long ownerId = note.getOwner().getId();
-            String username = note.getOwner().getUsername();
+            String firstName = note.getOwner().getFirstName();
+            String lastName = note.getOwner().getLastName();
 
             // Create NoteResponse dto
             NoteResponse noteResponse = new NoteResponse();
@@ -75,7 +76,8 @@ public class NoteService {
             noteResponse.setContent(content);
             noteResponse.setCreatedAt(createdAt);
             noteResponse.setOwnerId(ownerId);
-            noteResponse.setOwnerUsername(username);
+            noteResponse.setOwnerFirstName(firstName);
+            noteResponse.setOwnerLastName(lastName);
             noteResponse.setCourseId(course.getId());
             noteResponse.setCourseName(course.getName());
 
@@ -119,7 +121,8 @@ public class NoteService {
         noteResponse.setTitle(savedNote.getTitle());
         noteResponse.setContent(savedNote.getContent());
         noteResponse.setOwnerId(userId);
-        noteResponse.setOwnerUsername(user.getUsername());
+        noteResponse.setOwnerFirstName(user.getFirstName());
+        noteResponse.setOwnerLastName(user.getLastName());
         noteResponse.setCreatedAt(savedNote.getCreatedAt());
         noteResponse.setId(savedNote.getId());
         noteResponse.setCourseId(course.getId());
@@ -193,7 +196,8 @@ public class NoteService {
         noteResponse.setTitle(savedNote.getTitle());
         noteResponse.setContent(savedNote.getContent());
         noteResponse.setOwnerId(savedNote.getOwner().getId());
-        noteResponse.setOwnerUsername(savedNote.getOwner().getUsername());
+        noteResponse.setOwnerFirstName(savedNote.getOwner().getFirstName());
+        noteResponse.setOwnerLastName(savedNote.getOwner().getLastName());
         noteResponse.setCreatedAt(savedNote.getCreatedAt());
         noteResponse.setCourseName(course.getName());
         noteResponse.setCourseId(courseId);

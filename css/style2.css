@@ -242,22 +242,22 @@ aside{
     flex-shrink: 0;
 }
 
-.user-info .user-email {
+.user-email {
     font-size: 0.7rem;
     color: var(--secondary-text-clr);
 }
 
-.user-info .username {
+.username {
     font-size: 0.9rem;
     font-weight: 500;
 }
 
-.user-info {
+#user-info {
     padding-left: 0.5rem;
     min-width: 0;
 }
 
-.user-info p {
+#user-info p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

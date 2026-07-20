@@ -2,18 +2,12 @@ package com.raheemspence.controller;
 
 import com.raheemspence.dto.LoginRequest;
 import com.raheemspence.dto.SignupRequest;
-import com.raheemspence.model.Note;
 import com.raheemspence.model.User;
-import com.raheemspence.repository.NoteRepository;
-import com.raheemspence.repository.UserRepository;
 import com.raheemspence.service.AuthService;
 import jakarta.servlet.http.HttpSession;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
 // Means this class handles HTTP requests and returns data (not HTML pages)
 @RestController

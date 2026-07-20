@@ -12,7 +12,8 @@ public class CreateCourseResponse {
     private String courseName;
     private String school;
     private Instant createdAt;
-    private String creatorUsername;
+    private String creatorFirstName;
+    private String creatorLastName;
     private Long creator_id;
     private String joinCode;
 }

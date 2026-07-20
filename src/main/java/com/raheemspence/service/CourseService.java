@@ -75,7 +75,8 @@ public class CourseService {
 
         createCourseResponse.setCourseName(savedCourse.getName());
         createCourseResponse.setSchool(savedCourse.getSchool());
-        createCourseResponse.setCreatorUsername(user.getUsername());
+        createCourseResponse.setCreatorFirstName(user.getFirstName());
+        createCourseResponse.setCreatorLastName(user.getLastName());
         createCourseResponse.setCreator_id(user.getId());
         createCourseResponse.setJoinCode(createCourseRequest.getJoinCode());
         createCourseResponse.setCreatedAt(savedCourse.getCreatedAt());

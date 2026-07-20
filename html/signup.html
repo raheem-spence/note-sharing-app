@@ -8,13 +8,32 @@
 </head>
 <body>
     <div class="login-signup" id="signup">
-        <h2>Sign Up</h2>
-        <input required id="email" type="email" placeholder="Email" autofocus autocomplete="off">
-        <input requried id="username" type="text" placeholder="Username" autocomplete="off">
-        <input required id="password" type="password" placeholder="Password">
-        <input required id="confirm-pw" type="password" placeholder="Confirm Password">
-        <button id="create-accnt-btn" type="button">Sign Up</button>
-        <p>Already have an account? <a href="index.html">Log in</a></p>
+        <h2>Welcome to Margin</h2>
+        <div class="input-container">
+            <input required id="first-name" autofocus autocomplete="off">
+            <span class="input-txt">FIRST NAME</span>
+        </div>
+        <div class="input-container">
+            <input required id="last-name" autofocus autocomplete="off">
+            <span class="input-txt">LAST NAME</span>
+        </div>
+        <div class="input-container">
+            <input required id="signup-email" type="email" autofocus autocomplete="off">
+            <span class="input-txt">EMAIL</span>
+        </div>
+        <div class="input-container">
+            <input required id="signup-password" type="password" autocomplete="off">
+            <span class="input-txt">PASSWORD</span>
+        </div>
+        <div class="input-container">
+            <input required id="confirm-pw" type="password" autocomplete="off">
+            <span class="input-txt">CONFIRM PASSWORD</span>
+        </div>
+        <button id="create-accnt-btn" type="button">Create Account</button>
+        <div class="login-links">
+            <p>Already have an account? <a href="/html/login.html">Log in</a></p>
+        </div>
     </div>
+    <script src="../js/script.js"></script>
 </body>
 </html>

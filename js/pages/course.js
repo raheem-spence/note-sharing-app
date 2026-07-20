@@ -1,4 +1,5 @@
 import { fetchCourses } from "../api/courses.js";
+import { fetchCurrentUser } from "../api/users.js";
 import { loadNotes, createNote, updateNote } from "../api/notes.js";
 
 // ---------- Configuration ---------- 
@@ -19,6 +20,9 @@ const createNoteBtn = document.getElementById("create-note-btn");
 
 const newTitleInput = document.getElementById("note-title-input");
 
+const userDiv = document.getElementById("user-info");
+
+
 
 // ---------- App State ---------- 
 
@@ -33,6 +37,9 @@ renderCourses(courses);
 // Show user notes
 
 await refreshNotes(courseId);
+
+// Show user info
+await renderUser();
 
 
 // ---------- Sidebar ---------- 
@@ -71,6 +78,25 @@ function renderCourses(courses) {
     const currentCourseName = document.querySelector('.course.active');
     updateHeading(currentCourseName);
 }
+
+// Render username and email 
+async function renderUser() {
+
+    const user = await fetchCurrentUser();
+
+    const usernamePara = document.createElement('p');
+    const userEmailPara = document.createElement('p');
+
+    usernamePara.textContent = user.firstName + " " + user.lastName;
+    usernamePara.classList.add("username");
+
+    userEmailPara.textContent = user.email;
+    userEmailPara.classList.add("user-email")
+    
+    userDiv.appendChild(usernamePara);
+    userDiv.appendChild(userEmailPara);
+}
+
 
 // ---------- Notes CRUD ---------- 
 

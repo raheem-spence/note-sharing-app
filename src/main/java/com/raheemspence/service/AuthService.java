@@ -38,9 +38,7 @@ public class AuthService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             return "Email already exists";
         }
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            return "Username already exists";
-        }
+
         if(!request.getPassword().equals(request.getConfirmPassword())) {
             return "Passwords do not match";
         }
@@ -49,8 +47,9 @@ public class AuthService {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
         user.setPasswordHash(hashedPassword);
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
 
         userRepository.save(user);
 
@@ -78,7 +77,6 @@ public class AuthService {
         }
 
         return user;
-
     }
 
 }
