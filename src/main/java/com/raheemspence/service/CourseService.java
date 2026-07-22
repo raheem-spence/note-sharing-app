@@ -1,6 +1,10 @@
 package com.raheemspence.service;
 
-import com.raheemspence.dto.*;
+import com.raheemspence.dto.request.CreateCourseRequest;
+import com.raheemspence.dto.request.JoinCourseRequest;
+import com.raheemspence.dto.response.CourseResponse;
+import com.raheemspence.dto.response.CreateCourseResponse;
+import com.raheemspence.dto.response.JoinCourseResponse;
 import com.raheemspence.model.Course;
 import com.raheemspence.model.CourseMembership;
 import com.raheemspence.model.User;

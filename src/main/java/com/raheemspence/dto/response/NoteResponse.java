@@ -1,4 +1,4 @@
-package com.raheemspence.dto;
+package com.raheemspence.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.raheemspence.service;
 
-import com.raheemspence.dto.UserResponse;
+import com.raheemspence.dto.response.UserResponse;
 import com.raheemspence.model.User;
 import com.raheemspence.repository.UserRepository;
 import org.springframework.http.HttpStatus;

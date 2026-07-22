@@ -1,10 +1,12 @@
 package com.raheemspence.controller;
 
-import com.raheemspence.dto.LoginRequest;
-import com.raheemspence.dto.SignupRequest;
+import com.raheemspence.dto.request.LoginRequest;
+import com.raheemspence.dto.request.SignUpRequest;
+import com.raheemspence.dto.response.SignUpResponse;
 import com.raheemspence.model.User;
 import com.raheemspence.service.AuthService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +34,14 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequest request) {
-        return authService.signup(request);
+    public ResponseEntity<SignUpResponse> signup(@RequestBody SignUpRequest request) {
+        SignUpResponse signUpResponse = authService.signup(request);
+
+        if (signUpResponse.getStatus().equals("Error")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(signUpResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(signUpResponse);
+        }
     }
 
 }

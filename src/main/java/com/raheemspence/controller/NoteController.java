@@ -1,7 +1,7 @@
 package com.raheemspence.controller;
 
-import com.raheemspence.dto.NoteRequest;
-import com.raheemspence.dto.NoteResponse;
+import com.raheemspence.dto.request.NoteRequest;
+import com.raheemspence.dto.response.NoteResponse;
 import com.raheemspence.service.NoteService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;

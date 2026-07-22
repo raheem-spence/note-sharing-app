@@ -1,4 +1,4 @@
-package com.raheemspence.dto;
+package com.raheemspence.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

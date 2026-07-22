@@ -1,10 +1,13 @@
 package com.raheemspence.controller;
 
-import com.raheemspence.dto.*;
+import com.raheemspence.dto.request.CreateCourseRequest;
+import com.raheemspence.dto.request.JoinCourseRequest;
+import com.raheemspence.dto.response.CourseResponse;
+import com.raheemspence.dto.response.CreateCourseResponse;
+import com.raheemspence.dto.response.JoinCourseResponse;
 import com.raheemspence.service.CourseService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

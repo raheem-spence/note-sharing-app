@@ -1,7 +1,8 @@
 package com.raheemspence.service;
 
-import com.raheemspence.dto.LoginRequest;
-import com.raheemspence.dto.SignupRequest;
+import com.raheemspence.dto.request.LoginRequest;
+import com.raheemspence.dto.request.SignUpRequest;
+import com.raheemspence.dto.response.SignUpResponse;
 import com.raheemspence.model.User;
 import com.raheemspence.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -34,13 +35,22 @@ public class AuthService {
     }
 
     // Signup Logic
-    public String signup(SignupRequest request) {
+    public SignUpResponse signup(SignUpRequest request) {
+        SignUpResponse signUpResponse = new SignUpResponse();
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            return "Email already exists";
+
+            signUpResponse.setStatus("Error");
+            signUpResponse.setMessage("Email already exists.");
+
+            return signUpResponse;
         }
 
         if(!request.getPassword().equals(request.getConfirmPassword())) {
-            return "Passwords do not match";
+
+            signUpResponse.setStatus("Error");
+            signUpResponse.setMessage("Passwords do not match");
+
+            return signUpResponse;
         }
 
         String hashedPassword = passwordEncoder.encode(request.getPassword());
@@ -53,7 +63,10 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return "User created successfully";
+        signUpResponse.setStatus("Success");
+        signUpResponse.setMessage("User created successfully");
+
+        return signUpResponse;
     }
 
     // Login logic

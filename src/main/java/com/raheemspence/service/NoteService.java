@@ -1,7 +1,7 @@
 package com.raheemspence.service;
 
-import com.raheemspence.dto.NoteRequest;
-import com.raheemspence.dto.NoteResponse;
+import com.raheemspence.dto.request.NoteRequest;
+import com.raheemspence.dto.response.NoteResponse;
 import com.raheemspence.model.Course;
 import com.raheemspence.model.Note;
 import com.raheemspence.model.User;

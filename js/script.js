@@ -2,11 +2,14 @@
 // Select button
 const loginBtn = document.getElementById('login-btn');
 const createAcctBtn = document.getElementById('create-accnt-btn');
+const errorDiv = document.getElementById('error-box');
+const loginForm = document.getElementById('login-form');
+const signupForm = document.getElementById('signup-form');
 
 // Check if element exists, meaning we are on that page
 if (loginBtn) {
     // Add listener
-    loginBtn.addEventListener('click', async (e) => {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
@@ -25,22 +28,20 @@ if (loginBtn) {
          
         });
 
-        console.log("STATUS:", response.status);
-        console.log("OK?:", response.ok);
-
         if (response.ok) {
-            console.log("LOGIN SUCCESSFULL");
             window.location.href = "course.html";
     
         } else {
-            console.log("LOGIN FAILED :(");
+            errorDiv.classList.remove('hidden');
         }
      } catch (err) {
             console.log("LOGIN ERROR:", err);
         }
     });
 } else {
-    createAcctBtn.addEventListener('click', async(e) => {
+    signupForm.addEventListener('submit', async(e) => {
+        e.preventDefault();
+
         const firstName = document.getElementById("first-name").value;
         const lastName = document.getElementById("last-name").value;
         const email = document.getElementById("signup-email").value;
@@ -64,11 +65,16 @@ if (loginBtn) {
 
                 }),
             });
+
         
             if (response.ok) {
-                console.log("Sign up SUCCESSFULL");
                 window.location.href = "course.html";
+            } else {
+                data = await response.json()
+                errorDiv.textContent = data.message;
+                errorDiv.classList.remove('hidden');
             }
+
         } catch (error) {
             console.log("LOGIN ERROR:", error)
         }

@@ -1,4 +1,8 @@
 @import url('https://googleapis.com');
+:root {
+    --error-clr: #972121;
+    --text-clr: #ffffff;
+}
 
 body {
     font-family: 'Lato', sans-serif;
@@ -95,8 +99,23 @@ a {
 
 .login-links {
     margin-top: 24px;
+    font-size: 14px;
 }
 
 .login-links p{
-    color: #8a8c8e
+    color: #8a8c8e;
+}
+
+.hidden {
+    display: none;
+}
+
+.error-msg {
+    box-sizing: border-box;
+    background-color: var(--error-clr);
+    color: var(--text-clr);
+    width: 350px;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
 }

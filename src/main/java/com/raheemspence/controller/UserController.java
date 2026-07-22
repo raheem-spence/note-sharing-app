@@ -1,6 +1,6 @@
 package com.raheemspence.controller;
 
-import com.raheemspence.dto.UserResponse;
+import com.raheemspence.dto.response.UserResponse;
 import com.raheemspence.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.GetMapping;

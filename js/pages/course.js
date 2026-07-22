@@ -35,7 +35,6 @@ const courses = await fetchCourses();
 renderCourses(courses);
 
 // Show user notes
-
 await refreshNotes(courseId);
 
 // Show user info

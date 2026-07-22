@@ -3,36 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Sign Up | Margin</title>
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
     <div class="login-signup" id="signup">
-        <h2>Welcome to Margin</h2>
-        <div class="input-container">
-            <input required id="first-name" autofocus autocomplete="off">
-            <span class="input-txt">FIRST NAME</span>
-        </div>
-        <div class="input-container">
-            <input required id="last-name" autofocus autocomplete="off">
-            <span class="input-txt">LAST NAME</span>
-        </div>
-        <div class="input-container">
-            <input required id="signup-email" type="email" autofocus autocomplete="off">
-            <span class="input-txt">EMAIL</span>
-        </div>
-        <div class="input-container">
-            <input required id="signup-password" type="password" autocomplete="off">
-            <span class="input-txt">PASSWORD</span>
-        </div>
-        <div class="input-container">
-            <input required id="confirm-pw" type="password" autocomplete="off">
-            <span class="input-txt">CONFIRM PASSWORD</span>
-        </div>
-        <button id="create-accnt-btn" type="button">Create Account</button>
-        <div class="login-links">
-            <p>Already have an account? <a href="/html/login.html">Log in</a></p>
-        </div>
+        <form id="signup-form">
+            <h2>Welcome to Margin</h2>
+            <div class="input-container">
+                <input required id="first-name" autofocus autocomplete="off">
+                <span class="input-txt">FIRST NAME</span>
+            </div>
+            <div class="input-container">
+                <input required id="last-name" autofocus autocomplete="off">
+                <span class="input-txt">LAST NAME</span>
+            </div>
+            <div class="input-container">
+                <input required id="signup-email" type="email" autofocus autocomplete="off">
+                <span class="input-txt">EMAIL</span>
+            </div>
+            <div class="input-container">
+                <input required id="signup-password" type="password" autocomplete="off">
+                <span class="input-txt">PASSWORD</span>
+            </div>
+            <div class="input-container">
+                <input required id="confirm-pw" type="password" autocomplete="off">
+                <span class="input-txt">CONFIRM PASSWORD</span>
+            </div>
+            <div class="error-msg hidden" id="error-box"></div>
+            <button id="create-accnt-btn" type="submit">Create Account</button>
+            <div class="login-links">
+                <p>Already have an account? <a href="/html/login.html">Log in</a></p>
+            </div>
+        </form>
     </div>
     <script src="../js/script.js"></script>
 </body>
