@@ -1,6 +1,10 @@
-# Notes App API
+# Margin
 
-A backend REST API for a simple note-taking application built with Spring Boot. The system uses HTTP session-based authentication and supports CRUD operations for user-owned notes.
+Margin is a course-based collaboration platform designed to help students organize classes, share learning resources, and collaborate with classmates.
+
+Margin allows students to create or join courses, manage course-specific resources, and collaborate through shared notes. Access to resources is controlled through course membership, ensuring that only students within a course can view or contribute to that course's content.
+
+Built with Java Spring Boot, PostgreSQL, and Vanilla JS.
 
 ---
 
@@ -8,10 +12,11 @@ A backend REST API for a simple note-taking application built with Spring Boot. 
 
 - User signup and login
 - HTTP session-based authentication
-- Create, read, and delete notes
-- Notes are scoped to the logged-in user
+- Course creation and membership management
+- Course-based resource access control
+- Create, read, update and delete notes within courses
 - DTO-based responses for clean JSON output
-- Ownership validation (users can only access their own notes)
+- Ownership and permission-based authorization for shared resources
 
 ---
 
@@ -35,20 +40,41 @@ This project uses **HTTP session-based authentication**.
 - Each request retrieves the user ID from the session
 - No JWT or token-based authentication is used in this version
 
+Authentication verifies who the user is. Authorization determines what courses and resources the user can access.
+
+---
+
+## Access Control Model
+
+Margin uses course-based authorization.
+
+A user's access is determined by their relationship to a course. Only members of a course can access resources within that course.
+
+Resources are owned by users but exist within courses, allowing collaboration while maintaining controlled access.
+
+Resource permissions allow owners to grant additional access to other course members, such as viewing or editing shared notes.
+
 ---
 
 ## API Endpoints
 
-### Auth
+### Authentication
 
-- `POST /auth/signup` → Create a new user
-- `POST /auth/login` → Log in and create a session
+- `POST /auth/signup` → Create a new account.
+- `POST /auth/login` → Log in and create an authenticated session
+
+### Courses
+
+- `GET /course/my-courses` → Get courses associated with the logged-in user
+- `POST /course/create` → Create a new course
+- `POST /course/join` → Join an existing course using a join code
 
 ### Notes
 
-- `GET /notes` → Get all notes for the logged-in user
-- `POST /notes/create` → Create a new note
-- `DELETE /notes/{noteId}` → Delete a note (only if owner)
+- `GET /courses/{courseId}/notes` → Get notes accessible within a course
+- `POST /courses/{courseId}/notes` → Create a note within a course
+- `PUT /courses/{courseId}/notes/{noteId}` → Update a note (only if authorized)
+- `DELETE /notes/{noteId}` → Delete a note (only if authorized)
 
 ## Sample API Requests
 
@@ -65,7 +91,8 @@ POST /auth/signup
 Content-Type: application/json
 
 {
-  "username": "raheem",
+  "firstName": "Izuku",
+  "lastName": "Midoriya",
   "email": "test@email.com",
   "password": "password123"
 }
@@ -81,54 +108,95 @@ Content-Type: application/json
   "password": "password123"
 }
 ```
-### 3. Get Current User Notes
-
+### 3. Get Current User Notes for specific course
 ```http
-GET /notes
+GET /courses/{courseId}/notes
+```
+EXAMPLE
+```http
+GET /courses/1/notes
 ```
 RESPONSE
 ```http
 [
   {
-    "id": 1,
-    "title": "First note",
-    "content": "Testing note retrieval",
-    "createdAt": "2026-06-03T22:55:13Z",
+    "content": "Organic compounds...",
+    "courseId": 1,
+    "courseName": "Chemistry",
+    "createdAt": "2026-07-22T06:03:37.331420Z",
+    "id": 41,
+    "ownerFirstName": "Izuku",
     "ownerId": 1,
-    "ownerUsername": "raheem"
+    "ownerLastName": "Midoriya",
+    "title": "Organic compounds"
   }
 ]
 ```
-### 4. Create Note
+### 4. Create Note within specific course
 
 ```http
-POST /notes/create
+POST /courses/{courseId}/notes
+```
+EXAMPLE
+```http
+POST /courses/1/notes
 Content-Type: application/json
 
 {
-  "title": "My New Note",
-  "content": "This is a test note"
+  "title": "Test note",
+  "content": "Testing create note functionality"
 }
 ```
 RESPONSE
 ```http
 {
-  "id": 2,
-  "title": "My New Note",
-  "content": "This is a test note",
-  "createdAt": "2026-06-03T23:10:00Z",
-  "ownerId": 1,
-  "ownerUsername": "raheem"
+    "content": "Testing create note functionality",
+    "courseId": 1,
+    "courseName": "Chemistry",
+    "createdAt": "2026-07-23T18:56:56.877406Z",
+    "id": 42,
+    "ownerFirstName": "Izuku",
+    "ownerId": 1,
+    "ownerLastName": "Midoriya",
+    "title": "Test note"
 }
 ```
-### 5. Delete Note
-
+### 5. Update note within specific course
 ```http
-DELETE /notes/{noteId}
+PUT /courses/{courseId}/notes/{noteId}
 ```
 EXAMPLE
 ```http
-DELETE /notes/2
+PUT /courses/1/notes/42
+Content-Type: application/json
+
+{
+  "title": "Updated note",
+  "content": "Testing updating note functionality"
+}
+```
+RESPONSE
+```http
+{
+    "content": "Updated",
+    "courseId": 1,
+    "courseName": "Chemistry",
+    "createdAt": "2026-07-23T18:56:56.877406Z",
+    "id": 42,
+    "ownerFirstName": "Emelle",
+    "ownerId": 2,
+    "ownerLastName": "Spence",
+    "title": "Updated note"
+}
+```
+### 6. Delete Note within specific course
+
+```http
+DELETE /courses/{courseId}/notes/{noteId}
+```
+EXAMPLE
+```http
+DELETE /courses/1/notes/42
 ```
 RESPONSE
 ```
@@ -141,10 +209,27 @@ RESPONSE
 
 ### User
 - id
-- username
+- firstName
+- lastName
 - email
 - passwordHash
 - createdAt
+
+### Course
+- id
+- name
+- description
+- school
+- professor (optional)
+- semester (optional)
+- joinCode
+- createdAt
+- creator
+
+### Course Membership
+- id
+- user
+- course
 
 ### Note
 - id
@@ -152,32 +237,78 @@ RESPONSE
 - content
 - createdAt
 - updatedAt
+- deletedAt
 - owner (User)
+- course (Course)
+
+### Permission
+- id
+- user
+- note
+- permissionLevel (VIEWER, EDITOR)
+
+### PermissionLevel (enum)
+- VIEWER
+- EDITOR
 
 ---
 
 ## Security Rules
 
-- Users can only access their own notes
+- Users can only access courses they are members of
+- Users can only access resources within courses they are members of 
+- Resource permissions determine allowed actions
 - Unauthorized or invalid actions return:
     - 403 Forbidden (not allowed)
     - 404 Not Found (missing resources)
 
 ---
 
+## Architecture
+
+Margin follows a layered Spring Boot architecture:
+```text
+Frontend (Vanilla JS)
+    |
+REST API
+    |
+Controller
+    |
+Service
+    |
+Repository
+    |
+PostgreSQL Database
+```
+
 ## Project Status
 
-Core backend functionality complete:
+Currently implemented:
 
-- Authentication system working with sessions
-- Notes CRUD implemented (Create, Read, Delete)
+- User authentication with session management
+- Course creation and membership backend
+- Notes CRUD implemented (Create, Read, Update, Delete)
 - DTO layer added for clean API responses
-- Ownership-based access control enforced
+- PostgreSQL persistence
+
+Currently in development:
+
+- UI / UX design and frontend/backend integration
+- Course creation UI
+- Course joining UI
+- Empty states in frontend
 
 ---
 
-## Next Steps
+## Roadmap
 
-- Add update (edit) note functionality
-- Improve API response consistency (ResponseEntity)
-- Frontend integration
+### Collaboration Features
+- Shared documents and study guides
+- Comments and discussions
+- Expanded resource permissions
+- Course invitations
+
+### AI Features
+- Semantic search across course resources
+- AI-powered note summarization
+- AI-assisted study tools
