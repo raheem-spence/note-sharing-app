@@ -21,14 +21,20 @@ Built with Java Spring Boot, PostgreSQL, and Vanilla JS.
 ---
 
 ## Tech Stack
+### Backend
 
 - Java
 - Spring Boot
-- Spring Web
-- Spring Data JPA
-- Spring Security (configured for session handling)
+- Spring Data JPA / Hibernate
+- Spring Security (session-based authentication)
+
+### Database
 - PostgreSQL
-- Hibernate
+
+### Frontend
+- HTML
+- CSS
+- Vanilla JS
 
 ---
 
