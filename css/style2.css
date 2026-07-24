@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 :root {
     --base-clr: #11121a;
     --line-clr: #42434a;
@@ -27,13 +28,10 @@
 }
 
 html{
-    font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Figtree, sans-serif;
     font-size: 16px;
 }
 
-main {
-    padding: 1.5rem;
-}
 
 body{
     display: grid;
@@ -43,6 +41,7 @@ body{
     grid-template-areas: 
     "sidebar main"
     "sidebar main";
+    background-color: #f6f5f1;
 }
 
 
@@ -57,7 +56,6 @@ aside{
     background-color: var(--sidebar-clr);
     padding: 0.625rem;
     border-right: solid 1px var(--border-clr);
-    margin-right: 0.5rem;
 }
 
 
@@ -267,27 +265,41 @@ aside{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-left: 24px;
+    padding-right: 10px;
+    padding-bottom: 12px;
+    padding-top: 12px;
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid #00000012;
+    background-color: #f6f5f1;
+    z-index: 100;
+
 }
 
 .search-bar-container {
     display: flex;
+    justify-content: space-between;
     position: relative;
     gap: 1.25rem;
 }
 
 .search-bar input{
-    border-radius: 5px;
+    border-radius: 8px;
     border: 0.5px solid var(--gray-border);
     width: 250px;
+    height: 32px;
     padding: 0.7em;
     padding-left: 2.5em;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
 
 }
 
-.search-bar span{
+.search-bar .search-icon {
     position: absolute;
-    left: 9px;
+    left: 12px;
     top: 5px;
+    color: #6b6b6b;
 }
 
 .new-note-container{
@@ -350,4 +362,76 @@ aside{
 
 .note-content {
     color: black;
+}
+
+.empty-sidebar {
+    background-color: blue;
+    padding: 5px;
+}
+
+.welcome-div {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px 12px 24px;
+    border-bottom: 1px solid #00000012;
+
+}
+
+.welcome-div-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.welcome-date {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.welcome-msg {
+    font-size: 14px;
+    color: #42434a;
+}
+
+.dashboard-heading {
+    color: #7c3aed;
+    font-style: none;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.user-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding-right: 16px;
+}
+
+.user-initials-avatar {
+    display: flex;
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgb(221, 214, 254) 0%, rgb(196, 181, 253) 100%);
+    color: rgb(91, 33, 182);
+    align-items: center;
+    justify-content: center;
+}
+
+.name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.greeting {
+    font-family: Lora, serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.025rem;
 }

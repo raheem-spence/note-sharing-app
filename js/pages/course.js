@@ -9,6 +9,7 @@ const urlParams = new URLSearchParams(queryString);
 const courseId = urlParams.get('courseId');
 
 
+
 // ---------- DOM Elements ---------- 
 const courseTitle = document.getElementById('course-title');
 
@@ -22,11 +23,16 @@ const newTitleInput = document.getElementById("note-title-input");
 
 const userDiv = document.getElementById("user-info");
 
+const dashboardDiv = document.getElementById("dashboard-container");
+
 
 
 // ---------- App State ---------- 
 
 let currentlyEditingNoteId = null;
+renderDashboard()
+
+
 
 // ---------- Initialization ---------- 
 
@@ -47,35 +53,45 @@ await renderUser();
 function renderCourses(courses) {
     // clear ul container
     ulContainer.replaceChildren();
-    const fieldName = "courseId";
 
-    for (const course of courses) {
-        const url = new URL(baseCourseUrl);
-        const courseLi = document.createElement('li');
-        courseLi.classList.add('course');
+    if (courses.length === 0) {
+        const emptyMsgSidebarDiv = document.createElement('div');
+
+        emptyMsgSidebarDiv.textContent = "You have no courses yet..."
+        emptyMsgSidebarDiv.classList.add('empty-sidebar');
+        ulContainer.appendChild(emptyMsgSidebarDiv);
+        
+    } else {
+        const fieldName = "courseId";
+
+        for (const course of courses) {
+            const url = new URL(baseCourseUrl);
+            const courseLi = document.createElement('li');
+            courseLi.classList.add('course');
 
 
-        const courseATag = document.createElement('a');
-        const fieldValue = course.id;
-        url.searchParams.set(fieldName, fieldValue);
+            const courseATag = document.createElement('a');
+            const fieldValue = course.id;
+            url.searchParams.set(fieldName, fieldValue);
 
-        courseATag.href = url.toString();
+            courseATag.href = url.toString();
 
-        const courseName = document.createElement('span');
-        courseName.classList.add('course-name');
-        courseName.textContent = course.name;
+            const courseName = document.createElement('span');
+            courseName.classList.add('course-name');
+            courseName.textContent = course.name;
 
-        courseATag.appendChild(courseName);
+            courseATag.appendChild(courseName);
 
-        courseLi.appendChild(courseATag);
-        ulContainer.appendChild(courseLi);
+            courseLi.appendChild(courseATag);
+            ulContainer.appendChild(courseLi);
+        }
+
+        const sideBarCourses = document.querySelectorAll('li.course');
+        highlightActiveCourse(sideBarCourses);
+
+        const currentCourseName = document.querySelector('.course.active');
+        updateHeading(currentCourseName);
     }
-
-    const sideBarCourses = document.querySelectorAll('li.course');
-    highlightActiveCourse(sideBarCourses);
-
-    const currentCourseName = document.querySelector('.course.active');
-    updateHeading(currentCourseName);
 }
 
 // Render username and email 
@@ -356,3 +372,40 @@ async function handleUpdate(title, content, courseId, noteId) {
 }
 
 
+
+async function initializeApp() {
+
+}
+
+function renderDashboard() {
+    const welcomeDiv = document.createElement('div');
+    const welcomeDivContent = document.createElement('div');
+    const dashboardHeading = document.createElement('p');
+    const greeting = document.createElement('h1');
+    const welcomeMsg = document.createElement('p');
+
+    const dateDiv = document.createElement('div');
+    const date = document.createElement('p');
+    const today = new Date();
+    const options = {weekday: 'long', month: 'long', day: 'numeric'};
+
+    welcomeDivContent.classList.add("welcome-div-content");
+    welcomeMsg.classList.add("welcome-msg");
+    date.classList.add('welcome-date');
+    date.textContent = today.toLocaleDateString('en-US', options);
+    dashboardHeading.classList.add("dashboard-heading");
+    greeting.classList.add('greeting');
+
+    dashboardHeading.textContent = "DASHBOARD";
+    greeting.textContent = "Welcome back, Raheem.";
+    welcomeMsg.textContent = "Start organizing your notes by creating or joining a class.";
+    welcomeDiv.classList.add('welcome-div');
+    
+    
+    dateDiv.appendChild(date);
+    welcomeDivContent.append(dashboardHeading, greeting, welcomeMsg);
+    welcomeDiv.append(welcomeDivContent, dateDiv);
+    dashboardDiv.append(welcomeDiv);
+
+
+}

@@ -11,13 +11,16 @@
         <div class="logo">Margin</div>
 
         <nav class="sidebar-nav">
-            <p class="sidebar-label">My Courses</p>
-
+            <ul id="dashboard-item">
+                <li><a href="/html/course.html">Dashboard</a></li>
+            </ul>
+            <p class="sidebar-label">My courses</p>
             <ul id="course-list">
+
             </ul>
         </nav>
 
-        <button class="join-course-btn"><span class="plus-sign">+</span>Join Course</button>
+        <button class="join-course-btn"><span class="plus-sign">+</span>Add Course</button>
 
         <div class="sidebar-user">
             <div class="user-icon">
@@ -29,14 +32,21 @@
     </aside>
     <main>
         <header class="course-header">
-            <h2 id="course-title">Chemistry Notes</h2>
             <div class="search-bar-container">
                 <search class="search-bar">
-                    <span>🔍</span><input type="search" placeholder="Search notes...">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                    <input type="search" placeholder="Search notes, classes...">
                 </search>
             </div>
+            <div class="user-div">
+                <div class="user-initials-avatar">
+                    <span class="initials">RS</span>
+                </div>
+                <span class="name">Raheem S.</span>
+            </div>
         </header>
-        <div class="new-note-container"> 
+        <div id="dashboard-container"></div>
+        <!-- <div class="new-note-container"> 
             <h3>Create a new note</h3>
             <div class="title-container">
                 <input type="text" name="" id="note-title-input" placeholder="Note title...">
@@ -49,7 +59,7 @@
         </div>
         <h3 class="notes-container-heading">Notes</h3>
         <div id="notes-container" class="notes-container">
-        </div>
+        </div> -->
     </main>
 </body>
 </html>
